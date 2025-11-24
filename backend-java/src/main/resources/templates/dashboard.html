@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Kid Nani</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/lesson-path.js" defer></script>
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <!-- TOP NAVIGATION BAR -->
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}" class="active">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/tests}">📝 Bài kiểm tra</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <a th:if="${isAdmin}" th:href="@{/admin}" style="background: #FEF3C7; color: #92400E;">
+                👑 Quản trị
+            </a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <!-- Lesson Path Header -->
+        <div class="lesson-path-container">
+            <div class="path-header">
+                <div class="path-header-left">
+                    <span class="path-arrow">←</span>
+                    <span class="path-title" th:text="${lessonPath.size() > 0 ? (lessonPath[0].partName ?: 'PHẦN 1, CỬA 1') : 'PHẦN 1, CỬA 1'}">PHẦN 1, CỬA 1</span>
+                </div>
+                <button class="path-guide-btn">
+                    <span>📋</span>
+                    <span>HƯỚNG DẪN</span>
+                </button>
+            </div>
+
+            <!-- Lesson Path Visualization -->
+            <div class="lesson-path">
+                <div th:each="lesson, iterStat : ${lessonPath}" class="lesson-node">
+                    <!-- Connector line (except first) -->
+                    <div th:if="${iterStat.index > 0}" 
+                         class="path-connector"
+                         th:classappend="${progressMap.get(lessonPath[iterStat.index - 1].id)?.completed} ? 'completed'">
+                    </div>
+                    
+                    <!-- Lesson circle -->
+                    <a th:href="@{'/lessons/' + ${lesson.id}}"
+                       th:if="${progressMap.get(lesson.id)?.unlocked != false}"
+                       class="lesson-circle"
+                       th:classappend="${progressMap.get(lesson.id)?.completed} ? 'completed' : 'active'"
+                       th:attr="data-lesson-id=${lesson.id}">
+                        <span th:if="${progressMap.get(lesson.id)?.completed}">✓</span>
+                        <span th:if="${!progressMap.get(lesson.id)?.completed}">⭐</span>
+                    </a>
+                    <div th:if="${progressMap.get(lesson.id)?.unlocked == false}"
+                         class="lesson-circle locked"
+                         th:attr="data-lesson-id=${lesson.id}">
+                        🔒
+                    </div>
+                    
+                    <!-- Lesson label -->
+                    <div class="lesson-label" 
+                         th:classappend="${progressMap.get(lesson.id)?.unlocked != false && !progressMap.get(lesson.id)?.completed} ? 'active'">
+                        <span th:text="${lesson.title}">Lesson</span>
+                    </div>
+                </div>
+                
+                <!-- Test node (appears after completing N lessons) -->
+                <div class="lesson-node" th:if="${availableTest != null}">
+                    <div class="path-connector" th:classappend="${completedLessonsCount >= availableTest.afterLessons} ? 'completed'"></div>
+                    <a th:href="@{'/test/' + ${availableTest.id}}"
+                       th:if="${completedLessonsCount >= availableTest.afterLessons}"
+                       class="lesson-circle test-circle"
+                       title="Bài kiểm tra">
+                        📝
+                    </a>
+                    <div th:if="${completedLessonsCount < availableTest.afterLessons}"
+                         class="lesson-circle test-circle locked"
+                         title="Hoàn thành thêm bài học để mở khóa">
+                        🔒
+                    </div>
+                    <div class="lesson-label" th:classappend="${completedLessonsCount >= availableTest.afterLessons} ? 'active'">
+                        <span th:text="${availableTest.title}">Bài kiểm tra</span>
+                    </div>
+                </div>
+                
+                <!-- Duo mascot -->
+                <div class="duo-mascot">🦉</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="right-sidebar">
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="lang-flag">🇺🇸</div>
+            <div class="stat-item">
+                <span class="stat-icon">🔥</span>
+                <span th:text="${user.streak}">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">💎</span>
+                <span th:text="${user.gems}">500</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">❤️</span>
+                <span th:text="${user.hearts}">5</span>
+            </div>
+        </div>
+
+        <!-- Leaderboard Unlock Card -->
+        <div class="right-card leaderboard-unlock" th:if="${completedLessonsCount < 10}">
+            <h3>Mở khóa Bảng xếp hạng!</h3>
+            <div class="lock-icon">🔒</div>
+            <p>Hoàn thành thêm <strong th:text="${10 - completedLessonsCount}">10</strong> bài học để bắt đầu thi đua</p>
+        </div>
+
+        <!-- Daily Quests -->
+        <div class="right-card">
+            <h3>Nhiệm vụ hằng ngày</h3>
+            <a href="#" class="view-all-link">XEM TẤT CẢ</a>
+            
+            <div class="daily-quest">
+                <div class="quest-icon">⚡</div>
+                <div class="quest-content">
+                    <div class="quest-title">Kiếm <span th:text="${dailyQuestTarget}">10</span> XP</div>
+                    <div class="quest-progress-bar">
+                        <div class="quest-progress-fill" 
+                             th:style="'width: ' + ${dailyQuestProgress} + '%'">
+                        </div>
+                    </div>
+                </div>
+                <div class="quest-reward">🎁</div>
+            </div>
+            
+            <div class="daily-quest">
+                <div class="quest-icon">📚</div>
+                <div class="quest-content">
+                    <div class="quest-title">Hoàn thành 1 bài học</div>
+                    <div class="quest-progress-bar">
+                        <div class="quest-progress-fill" 
+                             th:style="'width: ' + ${daily.lessonCompleted ? 100 : 0} + '%'">
+                        </div>
+                    </div>
+                </div>
+                <div class="quest-reward">🎁</div>
+            </div>
+            
+            <div class="daily-quest">
+                <div class="quest-icon">✅</div>
+                <div class="quest-content">
+                    <div class="quest-title">Hoàn thành 1 mini test</div>
+                    <div class="quest-progress-bar">
+                        <div class="quest-progress-fill" 
+                             th:style="'width: ' + ${daily.quizCompleted ? 100 : 0} + '%'">
+                        </div>
+                    </div>
+                </div>
+                <div class="quest-reward">🎁</div>
+            </div>
+        </div>
+
+        <!-- Profile Card (if not logged in) -->
+        <div class="right-card" th:if="${user == null}">
+            <h3>Tạo hồ sơ để lưu tiến trình của bạn!</h3>
+            <a th:href="@{/register}" class="btn-main" style="width: 100%; margin-top: 12px; display: block; text-align: center;">
+                TẠO HỒ SƠ
+            </a>
+            <a th:href="@{/login}" class="btn-main" style="width: 100%; margin-top: 8px; display: block; text-align: center; background: #3B82F6; border-color: #3B82F6;">
+                ĐĂNG NHẬP
+            </a>
+        </div>
+    </aside>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bảng xếp hạng</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/leaderboard}" class="active">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <!-- Locked State -->
+        <div th:if="${locked}" class="panel" style="text-align: center; max-width: 500px; margin: 40px auto;">
+            <div style="font-size: 64px; margin-bottom: 20px;">🔒</div>
+            <h1>Mở khóa Bảng xếp hạng!</h1>
+            <p style="font-size: 16px; color: #6B7280; margin: 20px 0;">
+                Hoàn thành thêm <strong th:text="${requiredLessons - completedLessons}">10</strong> bài học để bắt đầu thi đua
+            </p>
+            <div style="margin: 30px 0;">
+                <div style="font-size: 48px; font-weight: 700; color: #58CC02;" th:text="${completedLessons}">0</div>
+                <div style="color: #6B7280;">/ <span th:text="${requiredLessons}">10</span> bài học</div>
+            </div>
+            <div class="quest-progress-bar" style="max-width: 300px; margin: 20px auto;">
+                <div class="quest-progress-fill" 
+                     th:style="'width: ' + (${completedLessons} * 100.0 / ${requiredLessons}) + '%'">
+                </div>
+            </div>
+            <a th:href="@{/dashboard}" class="btn-main" style="margin-top: 20px; display: inline-block;">
+                Tiếp tục học
+            </a>
+        </div>
+
+        <!-- Unlocked State -->
+        <div th:if="${!locked}">
+            <h1>Bảng xếp hạng</h1>
+            <p>Top 10 học sinh có XP cao nhất.</p>
+            <table class="leaderboard-table">
+                <thead>
+                <tr>
+                    <th>Hạng</th>
+                    <th>Học sinh</th>
+                    <th>XP</th>
+                    <th>Gems</th>
+                    <th>Streak</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u,iter : ${topUsers}"
+                    th:classappend="${user.id == u.id} ? 'me-row'">
+                    <td th:text="${iter.index + 1}">1</td>
+                    <td>
+                        <span th:text="${u.displayName}">Tên</span>
+                        <span th:if="${user.id == u.id}"> (bạn)</span>
+                    </td>
+                    <td th:text="${u.xp}">0</td>
+                    <td>💎 <span th:text="${u.gems}">500</span></td>
+                    <td>🔥 <span th:text="${u.streak}">0</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+</body>
+</html>

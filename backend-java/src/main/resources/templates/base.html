@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kid Nani English</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="logo">Kid Nani</div>
+        <nav>
+            <a th:href="@{/dashboard}">Trang chính</a>
+            <p class="menu-title">Lộ trình học</p>
+            <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+            <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+            <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+            <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+            <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+            <hr>
+            <a th:href="@{/lessons}">Tất cả bài học</a>
+            <a th:href="@{/mywords}">Sổ tay từ vựng</a>
+            <a th:href="@{/vocabulary}">Từ vựng ETS</a>
+            <a th:href="@{/practice}">Ôn tập</a>
+            <a th:href="@{/minigame}">Mini game</a>
+            <a th:href="@{/leaderboard}">Bảng xếp hạng</a>
+            <a th:href="@{/shop}">Cửa hàng tim</a>
+            <a th:href="@{/logout}">Đăng xuất</a>
+        </nav>
+    </aside>
+    <main class="main">
+        <div th:replace="${content}"></div>
+    </main>
+</div>
+</body>
+</html>

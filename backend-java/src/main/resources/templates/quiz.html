@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini test</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <h1 th:text="'Mini test: ' + ${lesson.title}">Mini test</h1>
+        <div style="background: #EFF6FF; border: 2px solid #3B82F6; border-radius: 8px; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0; color: #1E40AF; font-weight: 600;">
+                ⚠️ <strong>Yêu cầu vượt ải:</strong> Bạn phải trả lời <strong>đúng hết 100% các câu</strong> mới được mở khóa bài học tiếp theo!
+            </p>
+            <p style="margin: 10px 0 0 0; color: #1E40AF; font-size: 0.9rem;">
+                💡 Làm đúng từ 70% trở lên vẫn được nhận XP, nhưng chỉ khi đúng 100% mới được vượt ải.
+            </p>
+        </div>
+        <form th:action="@{'/quiz/' + ${lesson.id}}" method="post" class="quiz-form">
+            <div class="quiz-question" th:each="q,iter : ${questions}">
+                <h3 th:text="${iter.index + 1} + '. ' + ${q.question}">Câu hỏi</h3>
+                <label><input type="radio" th:name="${'q_' + q.id}" value="A" required> A. <span th:text="${q.optionA}"></span></label><br>
+                <label><input type="radio" th:name="${'q_' + q.id}" value="B"> B. <span th:text="${q.optionB}"></span></label><br>
+                <label><input type="radio" th:name="${'q_' + q.id}" value="C"> C. <span th:text="${q.optionC}"></span></label><br>
+                <label><input type="radio" th:name="${'q_' + q.id}" value="D"> D. <span th:text="${q.optionD}"></span></label>
+                <hr>
+            </div>
+            <button type="submit" class="btn-main big">Nộp bài</button>
+        </form>
+    </main>
+</div>
+</body>
+</html>

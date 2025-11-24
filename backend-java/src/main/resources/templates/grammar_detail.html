@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${grammar.title}">Ngữ pháp</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="lesson-header">
+            <h1>📚 <span th:text="${grammar.title}">Grammar</span></h1>
+            <div class="pill">Thưởng <span th:text="${grammar.xpReward}">15</span> XP</div>
+        </div>
+        <p th:text="${grammar.description}">Mô tả</p>
+        
+        <div th:if="${message}" class="success" style="margin: 20px 0; padding: 12px; background: #D1FAE5; color: #065F46; border-radius: 8px; border: 1px solid #10B981;">
+            <strong>✓</strong> <span th:text="${message}"></span>
+        </div>
+
+        <!-- Grammar Content -->
+        <div class="panel" style="margin: 20px 0;">
+            <div class="grammar-content" th:utext="${grammar.contentHtml}"></div>
+        </div>
+
+        <!-- Examples -->
+        <div th:if="${grammar.examples}" class="panel" style="background: #F0FDF4; border: 2px solid #58CC02;">
+            <h3 style="color: #059669; margin-bottom: 15px;">💡 Ví dụ:</h3>
+            <div class="grammar-examples">
+                <p th:each="example : ${#strings.arraySplit(grammar.examples, ',')}" 
+                   style="padding: 10px; background: white; border-radius: 8px; margin: 8px 0; border-left: 4px solid #58CC02;">
+                    <span th:text="${example.trim()}"></span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap;">
+            <form method="post" th:action="@{'/grammar/' + ${grammar.id} + '/complete'}">
+                <button type="submit" class="btn-main big" style="background: #10B981; border-color: #10B981;">
+                    ✓ Hoàn thành bài ngữ pháp
+                </button>
+            </form>
+        </div>
+    </main>
+</div>
+<style>
+.grammar-content {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #1F2937;
+}
+
+.grammar-content h3 {
+    color: #059669;
+    font-size: 24px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.grammar-content h4 {
+    color: #047857;
+    font-size: 20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.grammar-content ul {
+    margin: 15px 0;
+    padding-left: 30px;
+}
+
+.grammar-content li {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.grammar-content b {
+    color: #059669;
+    font-weight: 700;
+}
+
+.grammar-content i {
+    color: #6B7280;
+    font-style: italic;
+}
+</style>
+</body>
+</html>
+

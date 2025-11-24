@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài học</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <h1>Danh sách bài học</h1>
+        <div class="lesson-grid">
+            <div class="lesson-item" th:each="l : ${lessons}">
+                <h3 th:text="${l.title}">Title</h3>
+                <p th:text="${l.description}">Description</p>
+                <p>XP: <span th:text="${l.xpReward}">10</span></p>
+                <a class="btn-main" th:href="@{'/lessons/' + ${l.id}}">Học bài</a>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

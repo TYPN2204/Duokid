@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tặng Avatar VIP - Admin</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar" style="background: linear-gradient(180deg, #1F2937 0%, #111827 100%);">
+        <div class="logo" style="color: #F59E0B; border-bottom: 2px solid #F59E0B; padding-bottom: 15px; margin-bottom: 20px;">
+            👑 ADMIN PANEL
+        </div>
+        <nav>
+            <a th:href="@{/admin}" style="color: #E5E7EB;">
+                📊 Dashboard
+            </a>
+            <hr style="border-color: #374151; margin: 15px 0;">
+            <p class="menu-title" style="color: #9CA3AF; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Quản lý dữ liệu</p>
+            <a th:href="@{/admin/import-lessons}" style="color: #E5E7EB;">
+                📚 Import Bài học
+            </a>
+            <a th:href="@{/admin/import-tests}" style="color: #E5E7EB;">
+                📝 Import Bài kiểm tra
+            </a>
+            <hr style="border-color: #374151; margin: 15px 0;">
+            <p class="menu-title" style="color: #9CA3AF; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Quản lý người dùng</p>
+            <a th:href="@{/admin/rewards}" style="color: #E5E7EB;">
+                🎁 Quản lý Phần thưởng
+            </a>
+            <a th:href="@{/admin/vip-avatar}" class="active" style="background: #F59E0B; color: #1F2937; font-weight: 700;">
+                ⭐ Tặng Avatar VIP
+            </a>
+            <hr style="border-color: #374151; margin: 20px 0;">
+            <a th:href="@{/dashboard}" style="color: #60A5FA; border: 1px solid #3B82F6; border-radius: 8px; padding: 10px; text-align: center; margin-top: 10px;">
+                🎓 Về trang học sinh
+            </a>
+            <a th:href="@{/logout}" style="color: #FCA5A5; margin-top: 10px;">
+                🚪 Đăng xuất
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <div style="margin-bottom: 30px;">
+            <h1>⭐ Tặng Avatar VIP</h1>
+            <p>Tặng avatar đặc biệt cho người dùng</p>
+        </div>
+
+        <div th:if="${success}" class="panel" style="background: #D1FAE5; border: 2px solid #10B981; margin-bottom: 20px;">
+            <strong>✅</strong> <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="panel" style="background: #FEE2E2; border: 2px solid #EF4444; margin-bottom: 20px;">
+            <strong>❌</strong> <span th:text="${error}"></span>
+        </div>
+
+        <div class="panel">
+            <h3>Tặng Avatar VIP</h3>
+            <form method="post" th:action="@{/admin/vip-avatar/give}" style="margin-top: 20px;">
+                <label style="display: block; margin-bottom: 15px;">
+                    <strong>Chọn người dùng:</strong>
+                    <select name="userId" required 
+                            style="margin-top: 8px; padding: 10px; width: 100%; border: 2px solid #E5E7EB; border-radius: 8px;">
+                        <option value="">-- Chọn người dùng --</option>
+                        <option th:each="u : ${users}" 
+                                th:value="${u.id}" 
+                                th:text="${u.displayName + ' (' + u.email + ')'}">
+                        </option>
+                    </select>
+                </label>
+                
+                <label style="display: block; margin-bottom: 15px;">
+                    <strong>URL Avatar VIP:</strong>
+                    <input type="text" name="avatarUrl" required 
+                           placeholder="Nhập URL avatar (ví dụ: /uploads/avatars/vip1.png hoặc /avatar-vip.svg)"
+                           style="margin-top: 8px; padding: 10px; width: 100%; border: 2px solid #E5E7EB; border-radius: 8px;">
+                </label>
+
+                <button type="submit" class="btn-main big" style="background: #EC4899; border-color: #EC4899;">⭐ Tặng Avatar VIP</button>
+            </form>
+        </div>
+
+        <div class="panel" style="background: #FCE7F3; border: 2px solid #EC4899;">
+            <h3 style="color: #BE185D;">💡 Avatar VIP mẫu:</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div style="text-align: center; padding: 15px; background: white; border-radius: 12px;">
+                    <div style="font-size: 48px; margin-bottom: 8px;">👑</div>
+                    <code style="font-size: 12px;">/avatar-vip-crown.svg</code>
+                </div>
+                <div style="text-align: center; padding: 15px; background: white; border-radius: 12px;">
+                    <div style="font-size: 48px; margin-bottom: 8px;">⭐</div>
+                    <code style="font-size: 12px;">/avatar-vip-star.svg</code>
+                </div>
+                <div style="text-align: center; padding: 15px; background: white; border-radius: 12px;">
+                    <div style="font-size: 48px; margin-bottom: 8px;">💎</div>
+                    <code style="font-size: 12px;">/avatar-vip-diamond.svg</code>
+                </div>
+                <div style="text-align: center; padding: 15px; background: white; border-radius: 12px;">
+                    <div style="font-size: 48px; margin-bottom: 8px;">🏆</div>
+                    <code style="font-size: 12px;">/avatar-vip-trophy.svg</code>
+                </div>
+            </div>
+            <p style="margin-top: 15px; color: #BE185D;">
+                <strong>Lưu ý:</strong> Bạn có thể sử dụng URL avatar tùy chỉnh hoặc đường dẫn đến file trong thư mục uploads/avatars/
+            </p>
+        </div>
+    </main>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,25 @@
+<!-- Sidebar Navigation Fragment -->
+<aside class="sidebar">
+    <div class="logo">duokid</div>
+    <nav>
+        <a th:href="@{/dashboard}" th:classappend="${#httpServletRequest.requestURI == '/dashboard' or #httpServletRequest.requestURI == '/'} ? 'active'">HỌC</a>
+        <p class="menu-title">Lộ trình học</p>
+        <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+        <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+        <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+        <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+        <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+        <hr>
+        <a th:href="@{/mywords}">Sổ tay từ vựng</a>
+        <a th:href="@{/vocabulary}">Từ vựng ETS</a>
+        <a th:href="@{/practice}">Ôn tập</a>
+        <a th:href="@{/minigame}">Mini game</a>
+        <a th:href="@{/tests}">Bài kiểm tra</a>
+        <a th:href="@{/leaderboard}">Bảng xếp hạng</a>
+        <a th:href="@{/shop}">Cửa hàng</a>
+        <a th:href="@{/chat}">💬 Hộp hội thoại</a>
+        <a th:href="@{/profile}">Thông tin học sinh</a>
+        <a th:href="@{/logout}">Đăng xuất</a>
+    </nav>
+</aside>
+

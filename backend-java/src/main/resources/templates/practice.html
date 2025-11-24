@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ôn tập hôm nay</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <h1>Ôn tập hôm nay</h1>
+        <p>Học lại một phần trong bài:</p>
+        <h2 th:text="${lesson.title}">Tên bài</h2>
+        <div th:utext="${lesson.contentHtml}"></div>
+        
+        <div style="display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap;">
+            <form th:action="@{'/quiz/' + ${lesson.id}}" method="get" style="margin: 0;">
+                <button type="submit" class="btn-main big">Làm mini test</button>
+            </form>
+            <form th:action="@{'/practice/game?lessonId=' + ${lesson.id}}" method="get" style="margin: 0;">
+                <button type="submit" class="btn-main big" style="background: #10B981; border-color: #10B981;">
+                    🎮 Luyện tập với game hình ảnh
+                </button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <h3>🤖 AI chấm điểm câu trả lời</h3>
+            <p><strong>Đề bài:</strong> <span th:text="${practiceQuestion}">Question</span></p>
+            <p><strong>Câu mẫu:</strong> <span th:text="${practiceExpected}">Expected</span></p>
+            <form th:action="@{/practice/grade}" method="post" class="ai-form">
+                <input type="hidden" name="lessonId" th:value="${lesson.id}">
+                <input type="hidden" name="question" th:value="${practiceQuestion}">
+                <input type="hidden" name="expected" th:value="${practiceExpected}">
+                <textarea name="studentAnswer"
+                          rows="3"
+                          placeholder="Nhập câu tiếng Anh của em..."
+                          th:text="${studentAnswer}"></textarea>
+                <button type="submit" class="btn-main">Chấm điểm</button>
+            </form>
+            <p class="error" th:if="${gradeError}" th:text="${gradeError}"></p>
+            <div class="panel" th:if="${gradeScore != null}">
+                <p><strong>Điểm:</strong> <span th:text="${gradeScore}">80</span>/100</p>
+                <p><strong>Feedback (EN):</strong> <span th:text="${gradeCommentEn}"></span></p>
+                <p><strong>Nhận xét (VI):</strong> <span th:text="${gradeCommentVi}"></span></p>
+                <p><strong>Câu mẫu:</strong> <span th:text="${practiceExpected}"></span></p>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

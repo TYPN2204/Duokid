@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Từ vựng ETS 2024 - duokid</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+    <style>
+        .vocab-filters {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: end;
+            margin-bottom: 1rem;
+        }
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        .vocab-stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 150px;
+        }
+        .stat-card h3 {
+            margin: 0;
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0.5rem 0 0 0;
+        }
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .vocab-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .vocab-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        .vocab-word {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        .vocab-type {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .vocab-meaning {
+            color: #4b5563;
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+        .vocab-ipa {
+            color: #6b7280;
+            font-style: italic;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        .vocab-example {
+            background: #f3f4f6;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            color: #374151;
+            margin-top: 0.75rem;
+            border-left: 3px solid #3b82f6;
+        }
+        .vocab-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .vocab-badge {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .pagination {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            align-items: center;
+        }
+        .pagination a,
+        .pagination span {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #374151;
+        }
+        .pagination .current {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .btn-clear {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-clear:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/tests}">📝 Bài kiểm tra</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <a th:if="${isAdmin}" th:href="@{/admin}" style="background: #FEF3C7; color: #92400E;">
+                👑 Quản trị
+            </a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <h1>📚 Từ vựng ETS 2024</h1>
+        <p>Tổng hợp từ vựng từ đề thi TOEIC ETS 2024 - LISTENING và READING</p>
+
+        <!-- Flash Messages -->
+        <div class="success" th:if="${success}" th:text="${success}"></div>
+        <div class="error" th:if="${error}" th:text="${error}"></div>
+
+        <!-- Statistics -->
+        <div class="vocab-stats">
+            <div class="stat-card">
+                <h3>Tổng số từ vựng</h3>
+                <div class="stat-value" th:text="${totalCount}">0</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <h3>LISTENING</h3>
+                <div class="stat-value" th:text="${listeningCount}">0</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <h3>READING</h3>
+                <div class="stat-value" th:text="${readingCount}">0</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" th:if="${isAdmin}">
+                <a th:href="@{/vocabulary/stats}" style="color: white; text-decoration: none;">
+                    <h3>📊 Xem thống kê</h3>
+                </a>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="vocab-filters">
+            <form method="get" th:action="@{/vocabulary}">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Loại test</label>
+                        <select name="testType" id="testTypeSelect" onchange="updateTestNumberOptions()">
+                            <option value="">Tất cả</option>
+                            <option value="LISTENING" th:selected="${testType == 'LISTENING'}">LISTENING</option>
+                            <option value="READING" th:selected="${testType == 'READING'}">READING</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" id="testNumberGroup">
+                        <label>Test số</label>
+                        <select name="testNumber" id="testNumberSelect">
+                            <option value="">Tất cả</option>
+                            <!-- LISTENING options -->
+                            <option th:each="num : ${listeningTestNumbers}" 
+                                    th:value="${num}" 
+                                    th:text="'TEST ' + ${num}"
+                                    th:selected="${testType == 'LISTENING' && testNumber == num}"
+                                    class="listening-option"
+                                    th:style="${testType == 'LISTENING' or testType == null or testType == ''} ? '' : 'display: none;'"></option>
+                            <!-- READING options -->
+                            <option th:each="num : ${readingTestNumbers}" 
+                                    th:value="${num}" 
+                                    th:text="'TEST ' + ${num}"
+                                    th:selected="${testType == 'READING' && testNumber == num}"
+                                    class="reading-option"
+                                    th:style="${testType == 'READING' or testType == null or testType == ''} ? '' : 'display: none;'"></option>
+                        </select>
+                    </div>
+                    <div class="filter-group" id="partNumberGroup">
+                        <label>Phần</label>
+                        <select name="partNumber" id="partNumberSelect">
+                            <option value="">Tất cả</option>
+                            <!-- LISTENING parts -->
+                            <option th:each="part : ${listeningParts}" 
+                                    th:value="${part}" 
+                                    th:text="${part}"
+                                    th:selected="${testType == 'LISTENING' && partNumber == part}"
+                                    class="listening-option"
+                                    th:style="${testType == 'LISTENING' or testType == null or testType == ''} ? '' : 'display: none;'"></option>
+                            <!-- READING parts -->
+                            <option th:each="part : ${readingParts}" 
+                                    th:value="${part}" 
+                                    th:text="${part}"
+                                    th:selected="${testType == 'READING' && partNumber == part}"
+                                    class="reading-option"
+                                    th:style="${testType == 'READING' or testType == null or testType == ''} ? '' : 'display: none;'"></option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="flex: 2;">
+                        <label>Tìm kiếm</label>
+                        <input type="text" name="search" placeholder="Tìm từ tiếng Anh, nghĩa tiếng Việt..." 
+                               th:value="${search}">
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <button type="submit" class="btn-main">🔍 Lọc</button>
+                    <a th:href="@{/vocabulary}" class="btn-main btn-clear">🔄 Xóa bộ lọc</a>
+                </div>
+            </form>
+        </div>
+        
+        <script>
+            function updateTestNumberOptions() {
+                const testType = document.getElementById('testTypeSelect').value;
+                const testNumberSelect = document.getElementById('testNumberSelect');
+                const partNumberSelect = document.getElementById('partNumberSelect');
+                
+                // Reset selections
+                testNumberSelect.value = '';
+                partNumberSelect.value = '';
+                
+                // Show/hide options based on test type
+                const listeningOptions = document.querySelectorAll('.listening-option');
+                const readingOptions = document.querySelectorAll('.reading-option');
+                
+                if (testType === 'LISTENING') {
+                    listeningOptions.forEach(opt => opt.style.display = '');
+                    readingOptions.forEach(opt => opt.style.display = 'none');
+                } else if (testType === 'READING') {
+                    listeningOptions.forEach(opt => opt.style.display = 'none');
+                    readingOptions.forEach(opt => opt.style.display = '');
+                } else {
+                    // Show all options when "Tất cả" is selected
+                    listeningOptions.forEach(opt => opt.style.display = '');
+                    readingOptions.forEach(opt => opt.style.display = '');
+                }
+            }
+            
+            // Initialize on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                updateTestNumberOptions();
+            });
+            
+            // Also run immediately if DOM is already loaded
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', updateTestNumberOptions);
+            } else {
+                updateTestNumberOptions();
+            }
+        </script>
+
+        <!-- Vocabulary List -->
+        <div th:if="${#lists.isEmpty(vocabularies)}">
+            <div class="panel">
+                <p style="text-align: center; color: #6b7280; padding: 2rem;">
+                    Không tìm thấy từ vựng nào. Hãy thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.
+                </p>
+            </div>
+        </div>
+
+        <div class="vocab-grid" th:if="${!#lists.isEmpty(vocabularies)}">
+            <div class="vocab-card" th:each="vocab : ${vocabularies}">
+                <div class="vocab-word" th:text="${vocab.englishWord}">word</div>
+                <div class="vocab-type" th:text="${vocab.wordType}">verb</div>
+                <div class="vocab-meaning" th:text="${vocab.vietnameseMeaning}">nghĩa</div>
+                <div class="vocab-ipa" th:if="${vocab.ipaAmerican}">
+                    🇺🇸 <span th:text="${vocab.ipaAmerican}">/wɜːrd/</span>
+                    <span th:if="${vocab.ipaBritish && vocab.ipaBritish != vocab.ipaAmerican}">
+                        | 🇬🇧 <span th:text="${vocab.ipaBritish}">/wɜːd/</span>
+                    </span>
+                </div>
+                <div class="vocab-example" th:if="${vocab.exampleSentence}">
+                    <strong>Ví dụ:</strong> <span th:text="${vocab.exampleSentence}"></span>
+                </div>
+                <div class="vocab-meta">
+                    <span class="vocab-badge" th:text="${vocab.testType}">LISTENING</span>
+                    <span th:if="${vocab.testNumber}">TEST <span th:text="${vocab.testNumber}">1</span></span>
+                    <span th:if="${vocab.partNumber}" th:text="${vocab.partNumber}">Part 1</span>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <a th:href="@{'/vocabulary/' + ${vocab.id}}" class="btn-main" style="display: inline-block;">
+                        Xem chi tiết
+                    </a>
+                    <form th:if="${isAdmin}" 
+                          th:action="@{'/vocabulary/' + ${vocab.id} + '/delete'}" 
+                          method="post" 
+                          style="display: inline-block; margin-left: 0.5rem;"
+                          onsubmit="return confirm('Bạn có chắc muốn xóa từ vựng này?');">
+                        <button type="submit" class="btn-main btn-clear" style="padding: 0.5rem 1rem;">
+                            Xóa
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:if="${currentPage > 0}" 
+               th:href="@{/vocabulary(testType=${testType}, testNumber=${testNumber}, partNumber=${partNumber}, search=${search}, page=${currentPage - 1}, size=${pageSize})}">
+                ← Trước
+            </a>
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:if="${i != currentPage}"
+                   th:href="@{/vocabulary(testType=${testType}, testNumber=${testNumber}, partNumber=${partNumber}, search=${search}, page=${i}, size=${pageSize})}"
+                   th:text="${i + 1}">1</a>
+                <span th:if="${i == currentPage}" class="current" th:text="${i + 1}">1</span>
+            </span>
+            <a th:if="${currentPage < totalPages - 1}"
+               th:href="@{/vocabulary(testType=${testType}, testNumber=${testNumber}, partNumber=${partNumber}, search=${search}, page=${currentPage + 1}, size=${pageSize})}">
+                Sau →
+            </a>
+        </div>
+
+        <p style="text-align: center; color: #6b7280; margin-top: 1rem;" th:if="${!#lists.isEmpty(vocabularies)}">
+            Hiển thị <span th:text="${#lists.size(vocabularies)}">0</span> / <span th:text="${total}">0</span> từ vựng
+        </p>
+    </main>
+</div>
+</body>
+</html>
+

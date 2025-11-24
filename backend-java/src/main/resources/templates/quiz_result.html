@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết quả</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <h1 th:text="'Kết quả: ' + ${lesson.title}">Kết quả</h1>
+        <p>Bạn làm đúng <b th:text="${correct}">0</b> / <b th:text="${total}">0</b> câu.</p>
+        <p th:if="${wrong > 0}">
+            Bạn trả lời sai <b th:text="${wrong}">0</b> câu → đã bị trừ cùng số tim tương ứng. ❤️
+        </p>
+        <p>Tim còn lại: <b th:text="${user.hearts}">0</b></p>
+        
+        <!-- Perfect score - vượt ải -->
+        <div th:if="${perfect}" style="background: #D1FAE5; border: 2px solid #10B981; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h2 style="margin: 0 0 10px 0; color: #065F46;">🎉 Chúc mừng! Bạn đã vượt ải!</h2>
+            <p style="margin: 0; color: #065F46;">
+                ✅ Bạn đã trả lời đúng <strong>100%</strong> các câu hỏi!<br>
+                🎁 Bài học tiếp theo đã được mở khóa!<br>
+                ⚡ Bạn đã nhận được XP và gems!
+            </p>
+        </div>
+        
+        <!-- Rương thưởng khi hoàn thành một ô cửa -->
+        <div th:if="${gateReward != null and gateReward.gateCompleted}" 
+             style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border: 3px solid #F59E0B; border-radius: 12px; padding: 25px; margin: 20px 0; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <div style="font-size: 64px; margin-bottom: 10px;">🎁</div>
+                <h2 style="margin: 0; color: #92400E; font-size: 24px;">RƯƠNG THƯỞNG Ô CỬA <span th:text="${gateReward.gateNumber}">1</span>!</h2>
+            </div>
+            <div style="background: white; border-radius: 8px; padding: 15px; margin: 15px 0; text-align: center;">
+                <p style="margin: 0; color: #92400E; font-size: 18px; font-weight: bold;">
+                    🎉 Bạn đã hoàn thành hết tất cả bài học trong <strong>Ô cửa <span th:text="${gateReward.gateNumber}">1</span></strong>!
+                </p>
+            </div>
+            <div style="display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap; gap: 15px;">
+                <div style="background: white; border-radius: 8px; padding: 15px; text-align: center; flex: 1; min-width: 120px;">
+                    <div style="font-size: 32px; margin-bottom: 5px;">💎</div>
+                    <div style="color: #92400E; font-size: 20px; font-weight: bold;" th:text="'+' + ${gateReward.gemsReward} + ' Gems'">+50 Gems</div>
+                </div>
+                <div style="background: white; border-radius: 8px; padding: 15px; text-align: center; flex: 1; min-width: 120px;">
+                    <div style="font-size: 32px; margin-bottom: 5px;">⚡</div>
+                    <div style="color: #92400E; font-size: 20px; font-weight: bold;" th:text="'+' + ${gateReward.xpReward} + ' XP'">+100 XP</div>
+                </div>
+            </div>
+            <div th:if="${gateReward.nextGateUnlocked}" 
+                 style="background: #D1FAE5; border: 2px solid #10B981; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: center;">
+                <p style="margin: 0; color: #065F46; font-weight: bold;">
+                    🚪 <strong>Ô cửa <span th:text="${gateReward.nextGateNumber}">2</span></strong> đã được mở khóa! Hãy tiếp tục học nhé! 🎉
+                </p>
+            </div>
+        </div>
+        
+        <!-- Passed but not perfect -->
+        <div th:if="${passed && !perfect}" style="background: #FEF3C7; border: 2px solid #F59E0B; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3 style="margin: 0 0 10px 0; color: #92400E;">👍 Tốt lắm! Bạn đã đạt 70%+</h3>
+            <p style="margin: 0; color: #92400E;">
+                ⚡ Bạn đã nhận được XP và cập nhật streak.<br>
+                ⚠️ Nhưng để <strong>vượt ải</strong>, bạn cần trả lời đúng <strong>100%</strong> các câu hỏi.<br>
+                💪 Hãy học lại và thử lại để vượt ải nhé!
+            </p>
+        </div>
+        
+        <!-- Not passed -->
+        <div th:if="${!passed}" style="background: #FEE2E2; border: 2px solid #EF4444; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3 style="margin: 0 0 10px 0; color: #991B1B;">😢 Chưa đạt yêu cầu</h3>
+            <p style="margin: 0; color: #991B1B;">
+                Bạn chưa đạt 70%. Hãy học lại bài và thử lại mini test nhé.<br>
+                💡 Để vượt ải, bạn cần trả lời đúng <strong>100%</strong> các câu hỏi.
+            </p>
+        </div>
+        
+        <p th:if="${outOfHearts}" style="background: #FEE2E2; border: 2px solid #EF4444; border-radius: 8px; padding: 15px; color: #991B1B;">
+            ⚠️ Bạn đã hết tim. Hãy vào cửa hàng để mua thêm tim nhé.
+        </p>
+        
+        <div style="display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap;">
+            <!-- Nút thử lại nếu chưa perfect và còn tim -->
+            <a th:if="${!perfect && user.hearts > 0}" 
+               th:href="@{'/quiz/' + ${lesson.id}}" 
+               class="btn-main big" 
+               style="background: #3B82F6; border-color: #3B82F6;">
+                🔄 Thử lại Mini Test
+            </a>
+            
+            <!-- Nút về dashboard nếu đã perfect -->
+            <a th:if="${perfect}" 
+               th:href="@{/dashboard}" 
+               class="btn-main big" 
+               style="background: #10B981; border-color: #10B981;">
+                🎉 Tiếp tục học
+            </a>
+            
+            <a th:href="@{'/lessons/' + ${lesson.id}}" class="btn-main">📚 Xem lại bài học</a>
+            <a th:href="@{/dashboard}" class="btn-main">🏠 Về trang chính</a>
+            <a th:if="${outOfHearts}" th:href="@{/shop}" class="btn-main" style="background: #EF4444; border-color: #EF4444;">
+                ❤️ Mua tim
+            </a>
+        </div>
+    </main>
+</div>
+</body>
+</html>

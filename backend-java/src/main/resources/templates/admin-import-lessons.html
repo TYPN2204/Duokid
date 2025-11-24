@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Import Bài học - Admin</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar" style="background: linear-gradient(180deg, #1F2937 0%, #111827 100%);">
+        <div class="logo" style="color: #F59E0B; border-bottom: 2px solid #F59E0B; padding-bottom: 15px; margin-bottom: 20px;">
+            👑 ADMIN PANEL
+        </div>
+        <nav>
+            <a th:href="@{/admin}" style="color: #E5E7EB;">
+                📊 Dashboard
+            </a>
+            <hr style="border-color: #374151; margin: 15px 0;">
+            <p class="menu-title" style="color: #9CA3AF; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Quản lý dữ liệu</p>
+            <a th:href="@{/admin/import-lessons}" class="active" style="background: #F59E0B; color: #1F2937; font-weight: 700;">
+                📚 Import Bài học
+            </a>
+            <a th:href="@{/admin/import-tests}" style="color: #E5E7EB;">
+                📝 Import Bài kiểm tra
+            </a>
+            <hr style="border-color: #374151; margin: 15px 0;">
+            <p class="menu-title" style="color: #9CA3AF; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Quản lý người dùng</p>
+            <a th:href="@{/admin/rewards}" style="color: #E5E7EB;">
+                🎁 Quản lý Phần thưởng
+            </a>
+            <a th:href="@{/admin/vip-avatar}" style="color: #E5E7EB;">
+                ⭐ Tặng Avatar VIP
+            </a>
+            <hr style="border-color: #374151; margin: 20px 0;">
+            <a th:href="@{/dashboard}" style="color: #60A5FA; border: 1px solid #3B82F6; border-radius: 8px; padding: 10px; text-align: center; margin-top: 10px;">
+                🎓 Về trang học sinh
+            </a>
+            <a th:href="@{/logout}" style="color: #FCA5A5; margin-top: 10px;">
+                🚪 Đăng xuất
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <div style="margin-bottom: 30px;">
+            <h1>📚 Import Bài học và Ngữ pháp</h1>
+            <p>Upload file JSON để import bài học và bài ngữ pháp vào hệ thống</p>
+        </div>
+
+        <div th:if="${success}" class="panel" style="background: #D1FAE5; border: 2px solid #10B981; margin-bottom: 20px;">
+            <strong>✅</strong> <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${warning}" class="panel" style="background: #FEF3C7; border: 2px solid #F59E0B; margin-bottom: 20px;">
+            <strong>⚠️</strong> <span th:text="${warning}"></span>
+        </div>
+
+        <div th:if="${error}" class="panel" style="background: #FEE2E2; border: 2px solid #EF4444; margin-bottom: 20px;">
+            <strong>❌</strong> <span th:text="${error}"></span>
+        </div>
+
+        <div class="panel">
+            <h3>Import từ file JSON</h3>
+            <p>Chọn file JSON chứa dữ liệu bài học và ngữ pháp để import vào hệ thống.</p>
+            <div style="background: #E0F2FE; border: 2px solid #3B82F6; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                <strong>💡 Lưu ý:</strong>
+                <ul style="margin: 10px 0 0 20px; color: #1E40AF;">
+                    <li>Dữ liệu sau khi import sẽ <strong>có sẵn cho TẤT CẢ học sinh</strong> trong hệ thống</li>
+                    <li>Đảm bảo <code>level</code> trong JSON khớp với lớp học (GRADE1, GRADE2, GRADE3, GRADE4, GRADE5)</li>
+                    <li>Học sinh sẽ thấy bài học ở trang <strong>Lộ trình học</strong> tương ứng với level của họ</li>
+                </ul>
+            </div>
+            
+            <form method="post" th:action="@{/admin/import-lessons}" enctype="multipart/form-data" style="margin-top: 20px;">
+                <label style="display: block; margin-bottom: 15px;">
+                    <strong>Chọn file JSON:</strong>
+                    <input type="file" name="file" accept=".json" required 
+                           style="margin-top: 8px; padding: 10px; width: 100%; border: 2px solid #E5E7EB; border-radius: 8px;">
+                </label>
+                <button type="submit" class="btn-main big">📥 Import Dữ liệu</button>
+            </form>
+        </div>
+
+        <div class="panel" style="background: #F0FDF4; border: 2px solid #58CC02;">
+            <h3 style="color: #059669;">📋 Format JSON mẫu:</h3>
+            <pre style="background: white; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code>{
+  "lessons": [
+    {
+      "title": "Lesson title",
+      "description": "Description",
+      "level": "GRADE3",
+      "lessonType": "VOCABULARY",
+      "contentHtml": "&lt;ul&gt;&lt;li&gt;word – nghĩa&lt;/li&gt;&lt;/ul&gt;",
+      "orderIndex": 0,
+      "partName": "PHẦN 1, CỬA 1",
+      "xpReward": 10
+    }
+  ],
+  "grammar": [
+    {
+      "title": "Grammar title",
+      "description": "Description",
+      "level": "GRADE3",
+      "topic": "Present Simple",
+      "contentHtml": "Grammar explanation...",
+      "examples": "I play, You play, He plays",
+      "orderIndex": 1,
+      "partName": "PHẦN 1, CỬA 2",
+      "xpReward": 15
+    }
+  ]
+}</code></pre>
+        </div>
+    </main>
+</div>
+</body>
+</html>
+

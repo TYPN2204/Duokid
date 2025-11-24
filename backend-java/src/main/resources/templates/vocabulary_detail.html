@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${vocabulary.englishWord + ' - Từ vựng ETS 2024'}">Vocabulary Detail - duokid</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+    <style>
+        .vocab-detail {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .vocab-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .vocab-word-large {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .vocab-type-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .vocab-ipa-large {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        .vocab-section {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .vocab-section h3 {
+            color: #1f2937;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 0.5rem;
+        }
+        .vocab-meaning-large {
+            font-size: 1.25rem;
+            color: #374151;
+            line-height: 1.8;
+        }
+        .vocab-example-box {
+            background: #f3f4f6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            margin-top: 1rem;
+        }
+        .vocab-example-box strong {
+            color: #1f2937;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .vocab-example-text {
+            font-size: 1.1rem;
+            color: #4b5563;
+            font-style: italic;
+        }
+        .vocab-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .meta-item {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .meta-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .meta-value {
+            font-size: 1rem;
+            color: #1f2937;
+            font-weight: 600;
+        }
+        .synonyms-antonyms {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .synonym-list,
+        .antonym-list {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .synonym-list {
+            border-left: 4px solid #10b981;
+        }
+        .antonym-list {
+            border-left: 4px solid #ef4444;
+        }
+        .word-tag {
+            display: inline-block;
+            background: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            margin: 0.25rem;
+            font-size: 0.875rem;
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/tests}">📝 Bài kiểm tra</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <a th:if="${isAdmin}" th:href="@{/admin}" style="background: #FEF3C7; color: #92400E;">
+                👑 Quản trị
+            </a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="vocab-detail">
+            <!-- Back Button -->
+            <a th:href="@{/vocabulary}" class="btn-main" style="display: inline-block; margin-bottom: 1rem;">
+                ← Quay lại danh sách
+            </a>
+
+            <!-- Flash Messages -->
+            <div class="success" th:if="${success}" th:text="${success}"></div>
+            <div class="error" th:if="${error}" th:text="${error}"></div>
+
+            <!-- Header -->
+            <div class="vocab-header">
+                <div class="vocab-word-large" th:text="${vocabulary.englishWord}">word</div>
+                <div class="vocab-type-badge" th:text="${vocabulary.wordType}">verb</div>
+                <div class="vocab-ipa-large" th:if="${vocabulary.ipaAmerican}">
+                    🇺🇸 <span th:text="${vocabulary.ipaAmerican}">/wɜːrd/</span>
+                    <span th:if="${vocabulary.ipaBritish && vocabulary.ipaBritish != vocabulary.ipaAmerican}">
+                        | 🇬🇧 <span th:text="${vocabulary.ipaBritish}">/wɜːd/</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Meaning -->
+            <div class="vocab-section">
+                <h3>📖 Nghĩa tiếng Việt</h3>
+                <div class="vocab-meaning-large" th:text="${vocabulary.vietnameseMeaning}">
+                    nghĩa của từ
+                </div>
+            </div>
+
+            <!-- Example Sentence -->
+            <div class="vocab-section" th:if="${vocabulary.exampleSentence}">
+                <h3>💬 Câu ví dụ</h3>
+                <div class="vocab-example-box">
+                    <strong>Ví dụ:</strong>
+                    <div class="vocab-example-text" th:text="${vocabulary.exampleSentence}">
+                        Example sentence here.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Synonyms and Antonyms -->
+            <div class="vocab-section" th:if="${vocabulary.synonyms || vocabulary.antonyms}">
+                <h3>🔗 Từ liên quan</h3>
+                <div class="synonyms-antonyms">
+                    <div class="synonym-list" th:if="${vocabulary.synonyms}">
+                        <div class="meta-label">Từ đồng nghĩa</div>
+                        <div>
+                            <span class="word-tag" 
+                                  th:each="syn : ${#strings.arraySplit(vocabulary.synonyms, ',')}"
+                                  th:text="${#strings.trim(syn)}">synonym</span>
+                        </div>
+                    </div>
+                    <div class="antonym-list" th:if="${vocabulary.antonyms}">
+                        <div class="meta-label">Từ trái nghĩa</div>
+                        <div>
+                            <span class="word-tag" 
+                                  th:each="ant : ${#strings.arraySplit(vocabulary.antonyms, ',')}"
+                                  th:text="${#strings.trim(ant)}">antonym</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metadata -->
+            <div class="vocab-section">
+                <h3>ℹ️ Thông tin</h3>
+                <div class="vocab-meta-grid">
+                    <div class="meta-item">
+                        <div class="meta-label">Loại test</div>
+                        <div class="meta-value" th:text="${vocabulary.testType}">LISTENING</div>
+                    </div>
+                    <div class="meta-item" th:if="${vocabulary.testNumber}">
+                        <div class="meta-label">Test số</div>
+                        <div class="meta-value" th:text="'TEST ' + ${vocabulary.testNumber}">TEST 1</div>
+                    </div>
+                    <div class="meta-item" th:if="${vocabulary.partNumber}">
+                        <div class="meta-label">Phần</div>
+                        <div class="meta-value" th:text="${vocabulary.partNumber}">Part 1</div>
+                    </div>
+                    <div class="meta-item" th:if="${vocabulary.createdAt}">
+                        <div class="meta-label">Ngày thêm</div>
+                        <div class="meta-value" th:text="${#temporals.format(vocabulary.createdAt, 'dd/MM/yyyy')}">
+                            01/01/2024
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="vocab-section" th:if="${isAdmin}">
+                <h3>⚙️ Quản lý</h3>
+                <form th:action="@{'/vocabulary/' + ${vocabulary.id} + '/delete'}" 
+                      method="post"
+                      onsubmit="return confirm('Bạn có chắc muốn xóa từ vựng này? Hành động này không thể hoàn tác!');">
+                    <button type="submit" class="btn-main" style="background: #ef4444; color: white;">
+                        🗑️ Xóa từ vựng
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
+

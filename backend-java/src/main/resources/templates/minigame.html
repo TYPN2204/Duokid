@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini game luyện từ vựng</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}" class="active">🎮 Mini game</a>
+            <a th:href="@{/tests}">📝 Bài kiểm tra</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1>Mini game luyện từ vựng</h1>
+            <p>Chọn một trong các game để bắt đầu luyện tập từ vựng!</p>
+            
+            <!-- Game Selection Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-top: 40px; max-width: 1100px; margin-left: auto; margin-right: auto; padding: 0 20px;">
+                <!-- Game 1: Nhìn hình chọn từ -->
+                <div class="panel" style="padding: 40px; text-align: center; background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 100%); border: 3px solid #58CC02; box-shadow: 0 10px 30px rgba(88, 204, 2, 0.2); transition: transform 0.3s ease;">
+                    <div style="font-size: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">🖼️</div>
+                    <h3 style="margin-bottom: 12px; font-size: 24px; font-weight: 800; color: #1F2937;">Nhìn hình chọn từ</h3>
+                    <p style="color: #6B7280; margin-bottom: 25px; font-size: 15px; line-height: 1.6;">
+                        Xem hình ảnh và chọn từ vựng đúng.<br>
+                        <strong style="color: #58CC02;">Mỗi câu đúng +10 điểm, thưởng 5 XP</strong>
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <a th:href="@{/minigame?category=Personal}" class="btn-main" style="width: 100%; background: #58CC02; border-color: #58CC02; font-size: 18px; padding: 16px; font-weight: 700; box-shadow: 0 4px 12px rgba(88, 204, 2, 0.3);">
+                            🎮 Chơi ngay
+                        </a>
+                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
+                            <a th:href="@{/minigame?category=Personal}" class="btn-main" style="padding: 10px 18px; font-size: 13px; background: #E0F2FE; color: #1E40AF; border-color: #3B82F6; border-width: 2px;">Personal</a>
+                            <a th:href="@{/minigame?category=Animals}" class="btn-main" style="padding: 10px 18px; font-size: 13px; background: #E0F2FE; color: #1E40AF; border-color: #3B82F6; border-width: 2px;">Animals</a>
+                            <a th:href="@{/minigame?category=Colors}" class="btn-main" style="padding: 10px 18px; font-size: 13px; background: #E0F2FE; color: #1E40AF; border-color: #3B82F6; border-width: 2px;">Colors</a>
+                            <a th:href="@{/minigame?category=Food}" class="btn-main" style="padding: 10px 18px; font-size: 13px; background: #E0F2FE; color: #1E40AF; border-color: #3B82F6; border-width: 2px;">Food</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game 2: Nhìn hình ghép từ -->
+                <div class="panel" style="padding: 40px; text-align: center; background: linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 100%); border: 3px solid #3B82F6; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2); transition: transform 0.3s ease;">
+                    <div style="font-size: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">🧩</div>
+                    <h3 style="margin-bottom: 12px; font-size: 24px; font-weight: 800; color: #1F2937;">Nhìn hình ghép từ</h3>
+                    <p style="color: #6B7280; margin-bottom: 25px; font-size: 15px; line-height: 1.6;">
+                        Xem hình ảnh và ghép các chữ cái thành từ vựng đúng.<br>
+                        <strong style="color: #3B82F6;">Mỗi câu đúng +15 điểm, thưởng 8 XP</strong>
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <a th:href="@{/minigame?gameType=puzzle&category=Personal}" class="btn-main" style="width: 100%; background: #3B82F6; border-color: #3B82F6; font-size: 18px; padding: 16px; font-weight: 700; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+                            🎮 Chơi ngay
+                        </a>
+                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
+                            <a th:href="@{/minigame?gameType=puzzle&category=Personal}" class="btn-main" style="padding: 10px 18px; font-size: 13px; background: #E0F2FE; color: #1E40AF; border-color: #3B82F6; border-width: 2px;">Personal</a>
+                            <a th:href="@{/minigame?gameType=puzzle&category=Animals}" class="btn-main" style="padding: 10px 18px; font-size: 13px; background: #E0F2FE; color: #1E40AF; border-color: #3B82F6; border-width: 2px;">Animals</a>
+                            <a th:href="@{/minigame?gameType=puzzle&category=Colors}" class="btn-main" style="padding: 10px 18px; font-size: 13px; background: #E0F2FE; color: #1E40AF; border-color: #3B82F6; border-width: 2px;">Colors</a>
+                            <a th:href="@{/minigame?gameType=puzzle&category=Food}" class="btn-main" style="padding: 10px 18px; font-size: 13px; background: #E0F2FE; color: #1E40AF; border-color: #3B82F6; border-width: 2px;">Food</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-layout">
+            <div class="panel">
+                <h3>Vòng chơi hiện tại</h3>
+                <form th:action="@{/minigame/submit}" method="post" class="game-form">
+                    <div class="game-question" th:each="q,iter : ${questions}">
+                        <input type="hidden" name="questionIds" th:value="${q.id}">
+                        <p class="gq-title" th:text="${iter.index + 1} + '. ' + ${q.prompt}">Câu hỏi</p>
+                        <div class="gq-options">
+                            <label th:each="opt : ${q.options}">
+                                <input type="radio"
+                                       th:name="${'answer_' + q.id}"
+                                       th:value="${opt}"
+                                       required>
+                                <span th:text="${opt}">Option</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-main big">Nộp kết quả</button>
+                </form>
+                <div class="game-result" th:if="${gamePoints != null}">
+                    <p><strong>Điểm vòng này:</strong> <span th:text="${gamePoints}">0</span> điểm</p>
+                    <p><strong>Số câu đúng:</strong> <span th:text="${gameCorrect}">0</span>/<span th:text="${gameTotal}">5</span></p>
+                    <p><strong>XP nhận được:</strong> +<span th:text="${gameXp}">0</span> ⚡</p>
+                    <p><strong>Kỷ lục của bạn:</strong> <span th:text="${gameBest}">0</span> điểm</p>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>🏅 Bảng xếp hạng mini game</h3>
+                <table class="leaderboard-table">
+                    <thead>
+                    <tr>
+                        <th>Hạng</th>
+                        <th>Học sinh</th>
+                        <th>Điểm tích lũy</th>
+                        <th>Best vòng</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="score,iter : ${leaderboard}"
+                        th:classappend="${user.id == score.user.id} ? 'me-row'">
+                        <td th:text="${iter.index + 1}">1</td>
+                        <td th:text="${score.user.displayName}">Tên</td>
+                        <td th:text="${score.totalPoints}">0</td>
+                        <td th:text="${score.bestRoundScore}">0</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(leaderboard)}">
+                        <td colspan="4">Chưa có ai tham gia. Hãy là người đầu tiên!</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
+

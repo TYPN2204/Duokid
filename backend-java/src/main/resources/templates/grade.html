@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lộ trình</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}" 
+                       th:classappend="${grade == 'GRADE1'} ? 'active' : ''">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}" 
+                       th:classappend="${grade == 'GRADE2'} ? 'active' : ''">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}" 
+                       th:classappend="${grade == 'GRADE3'} ? 'active' : ''">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}" 
+                       th:classappend="${grade == 'GRADE4'} ? 'active' : ''">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}" 
+                       th:classappend="${grade == 'GRADE5'} ? 'active' : ''">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/tests}">📝 Bài kiểm tra</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+            <h1 style="margin: 0;" th:text="'📚 Lộ trình ' + ${grade}">Lộ trình</h1>
+            <span style="background: #E0F2FE; color: #0369A1; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;"
+                  th:text="${grade}">GRADE1</span>
+        </div>
+        
+        <div style="background: #F0FDF4; border: 2px solid #10B981; border-radius: 12px; padding: 20px; margin-bottom: 30px;">
+            <h3 style="margin: 0 0 10px 0; color: #059669;">📖 Hướng dẫn</h3>
+            <p style="margin: 0; color: #065F46; line-height: 1.6;">
+                Chào mừng bạn đến với lộ trình học của <strong th:text="${grade}">GRADE1</strong>! 
+                Bạn có thể học từ vựng và ngữ pháp theo thứ tự, hoặc chọn bất kỳ bài học nào bạn muốn.
+                Hoàn thành bài học và làm mini test để nhận XP và mở khóa bài học tiếp theo!
+            </p>
+        </div>
+        
+        <!-- Lessons Section -->
+        <div th:if="${lessons != null and !lessons.isEmpty()}">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 30px; margin-bottom: 20px;">
+                <h2 style="margin: 0; color: #059669;">📚 Bài học từ vựng 
+                    <span style="font-size: 16px; color: #6B7280; font-weight: normal;" 
+                          th:text="'(' + ${#lists.size(lessons)} + ' bài)'">(0 bài)</span>
+                </h2>
+            </div>
+            <div class="lesson-grid">
+                <div class="lesson-item" th:each="l, iterStat : ${lessons}">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="background: #10B981; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px; font-size: 14px;"
+                              th:text="${iterStat.index + 1}">1</span>
+                        <h3 style="margin: 0; flex: 1;" th:text="${l.title}">Title</h3>
+                    </div>
+                    <p style="color: #6B7280; margin: 8px 0;" th:text="${l.description}">Desc</p>
+                    <div style="margin: 10px 0; color: #6B7280; font-size: 14px; display: flex; gap: 15px;">
+                        <span>🎁 <strong style="color: #059669;" th:text="${l.xpReward}">10</strong> XP</span>
+                        <span th:if="${l.partName}">📍 <span th:text="${l.partName}">Part</span></span>
+                    </div>
+                    <a class="btn-main" th:href="@{'/lessons/' + ${l.id}}" 
+                       style="width: 100%; text-align: center; margin-top: 10px;">
+                        📖 Học bài
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grammar Section -->
+        <div th:if="${grammarList != null and !grammarList.isEmpty()}">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 30px; margin-bottom: 20px;">
+                <h2 style="margin: 0; color: #3B82F6;">📝 Bài học ngữ pháp
+                    <span style="font-size: 16px; color: #6B7280; font-weight: normal;" 
+                          th:text="'(' + ${#lists.size(grammarList)} + ' bài)'">(0 bài)</span>
+                </h2>
+            </div>
+            <div class="lesson-grid">
+                <div class="lesson-item" th:each="g, iterStat : ${grammarList}" 
+                     style="border-left: 4px solid #3B82F6; background: linear-gradient(to right, #EFF6FF 0%, white 10%);">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="background: #3B82F6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px; font-size: 14px;"
+                              th:text="${iterStat.index + 1}">1</span>
+                        <h3 style="margin: 0; flex: 1;" th:text="${g.title}">Grammar Title</h3>
+                    </div>
+                    <p style="color: #6B7280; margin: 8px 0;" th:text="${g.description}">Grammar Description</p>
+                    <div style="margin: 10px 0; color: #6B7280; font-size: 14px; display: flex; gap: 15px; flex-wrap: wrap;">
+                        <span>🎁 <strong style="color: #3B82F6;" th:text="${g.xpReward}">15</strong> XP</span>
+                        <span th:if="${g.topic}">📌 <strong th:text="${g.topic}">Topic</strong></span>
+                        <span th:if="${g.partName}">📍 <span th:text="${g.partName}">Part</span></span>
+                    </div>
+                    <a class="btn-main" th:href="@{'/grammar/' + ${g.id}}" 
+                       style="background: #3B82F6; border-color: #3B82F6; width: 100%; text-align: center; margin-top: 10px;">
+                        📚 Học ngữ pháp
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${(lessons == null or lessons.isEmpty()) and (grammarList == null or grammarList.isEmpty())}" 
+             style="text-align: center; padding: 60px 20px; color: #6B7280;">
+            <div style="font-size: 64px; margin-bottom: 20px;">📚</div>
+            <h3 style="color: #9CA3AF; margin-bottom: 10px;">Chưa có dữ liệu</h3>
+            <p>Lộ trình học cho lớp này đang được cập nhật. Vui lòng quay lại sau!</p>
+            <p style="margin-top: 20px; font-size: 14px;">
+                <a th:href="@{/admin/import}" style="color: #3B82F6; text-decoration: underline;">Import dữ liệu từ file JSON</a>
+            </p>
+        </div>
+    </main>
+</div>
+</body>
+</html>

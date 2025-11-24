@@ -1,0 +1,90 @@
+2025-11-19 14:21:15.147967+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (149977)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.181832+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (41779)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.208308+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (54217)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.229388+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (84100)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.252896+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (64109)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.270192+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (49063)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.286484+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (74351)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.310686+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (128156)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.330193+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (102543)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.351417+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (105408)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.370911+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (106250)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.391145+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (20062)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.405280+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (23142)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.421930+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (57052)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:21:15.439751+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (49919)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.526815+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (149977)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.543754+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (41779)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.563426+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (54217)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.584952+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (84100)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.610367+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (64109)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.628398+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (49063)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.645551+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (74351)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.672541+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (128156)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.695811+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (102543)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.716764+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (105408)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.738605+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (106250)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.755868+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (20062)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.780765+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (23142)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.802057+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (57052)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2025-11-19 14:23:41.811400+07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT_HTML CHARACTER VARYING(4000)": "U&'<h3>\\+01f4da T\\1eeb v\\1ef1ng</h3><ul style=''list-style: none; padding: 0;''>... (49919)"; SQL statement:
+insert into lessons (content_html,description,lesson_type,level,order_index,parent_id,part_name,title,xp_reward,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê từ vựng - duokid</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+    <style>
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .stats-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 {
+            margin: 0 0 1rem 0;
+            color: #6b7280;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin: 0;
+        }
+        .test-stats {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .test-stats h3 {
+            margin-top: 0;
+            color: #1f2937;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 0.5rem;
+        }
+        .test-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .test-item {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e5e7eb;
+        }
+        .test-item-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+        .test-item-count {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .part-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .part-badge {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/tests}">📝 Bài kiểm tra</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <a th:if="${isAdmin}" th:href="@{/admin}" style="background: #FEF3C7; color: #92400E;">
+                👑 Quản trị
+            </a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="stats-container">
+            <!-- Header -->
+            <div class="stats-header">
+                <h1 style="margin: 0 0 0.5rem 0;">📊 Thống kê từ vựng ETS 2024</h1>
+                <p style="margin: 0; opacity: 0.9;">Tổng quan về dữ liệu từ vựng trong hệ thống</p>
+            </div>
+
+            <!-- Back Button -->
+            <a th:href="@{/vocabulary}" class="btn-main" style="display: inline-block; margin-bottom: 1.5rem;">
+                ← Quay lại danh sách
+            </a>
+
+            <!-- Overall Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Tổng số từ vựng</h3>
+                    <div class="stat-value" th:text="${totalCount}">0</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid #f5576c;">
+                    <h3>LISTENING</h3>
+                    <div class="stat-value" style="color: #f5576c;" th:text="${listeningCount}">0</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid #4facfe;">
+                    <h3>READING</h3>
+                    <div class="stat-value" style="color: #4facfe;" th:text="${readingCount}">0</div>
+                </div>
+            </div>
+
+            <!-- LISTENING Stats -->
+            <div class="test-stats">
+                <h3>🎧 LISTENING - Thống kê theo Test</h3>
+                <div class="test-list" th:if="${!#lists.isEmpty(listeningTestNumbers)}">
+                    <div class="test-item" th:each="num : ${listeningTestNumbers}">
+                        <div class="test-item-number" th:text="'TEST ' + ${num}">TEST 1</div>
+                        <div class="test-item-count">
+                            <a th:href="@{/vocabulary(testType='LISTENING', testNumber=${num})}" 
+                               style="color: #3b82f6; text-decoration: none;">
+                                Xem từ vựng →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <p th:if="${#lists.isEmpty(listeningTestNumbers)}" style="color: #6b7280;">
+                    Chưa có dữ liệu LISTENING
+                </p>
+                
+                <h3 style="margin-top: 2rem;">📋 LISTENING - Các phần</h3>
+                <div class="part-list" th:if="${!#lists.isEmpty(listeningParts)}">
+                    <span class="part-badge" th:each="part : ${listeningParts}" th:text="${part}">Part 1</span>
+                </div>
+                <p th:if="${#lists.isEmpty(listeningParts)}" style="color: #6b7280;">
+                    Chưa có dữ liệu phần LISTENING
+                </p>
+            </div>
+
+            <!-- READING Stats -->
+            <div class="test-stats">
+                <h3>📖 READING - Thống kê theo Test</h3>
+                <div class="test-list" th:if="${!#lists.isEmpty(readingTestNumbers)}">
+                    <div class="test-item" th:each="num : ${readingTestNumbers}">
+                        <div class="test-item-number" th:text="'TEST ' + ${num}">TEST 1</div>
+                        <div class="test-item-count">
+                            <a th:href="@{/vocabulary(testType='READING', testNumber=${num})}" 
+                               style="color: #3b82f6; text-decoration: none;">
+                                Xem từ vựng →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <p th:if="${#lists.isEmpty(readingTestNumbers)}" style="color: #6b7280;">
+                    Chưa có dữ liệu READING
+                </p>
+                
+                <h3 style="margin-top: 2rem;">📋 READING - Các phần</h3>
+                <div class="part-list" th:if="${!#lists.isEmpty(readingParts)}">
+                    <span class="part-badge" th:each="part : ${readingParts}" th:text="${part}">Part 1</span>
+                </div>
+                <p th:if="${#lists.isEmpty(readingParts)}" style="color: #6b7280;">
+                    Chưa có dữ liệu phần READING
+                </p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="test-stats">
+                <h3>⚡ Thao tác nhanh</h3>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+                    <a th:href="@{/vocabulary}" class="btn-main">📚 Xem tất cả từ vựng</a>
+                    <a th:href="@{/vocabulary(testType='LISTENING')}" class="btn-main" style="background: #f5576c;">
+                        🎧 Chỉ LISTENING
+                    </a>
+                    <a th:href="@{/vocabulary(testType='READING')}" class="btn-main" style="background: #4facfe;">
+                        📖 Chỉ READING
+                    </a>
+                    <a th:href="@{/admin/import}" class="btn-main" style="background: #10b981;">
+                        📥 Import thêm dữ liệu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
+

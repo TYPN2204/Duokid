@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Setup Admin - Kid Nani</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body class="auth-body">
+<div class="auth-container">
+    <div class="chibi-character">👑</div>
+    <div class="auth-card">
+        <div class="avatar-icon">
+            <svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'>
+                <circle cx='40' cy='40' r='40' fill='#F59E0B'/>
+                <circle cx='40' cy='32' r='12' fill='#FFFFFF'/>
+                <path d='M 20 60 Q 20 50, 40 50 Q 60 50, 60 60 L 60 80 L 20 80 Z' fill='#FFFFFF'/>
+            </svg>
+        </div>
+        <h1>Tạo tài khoản Admin 👑</h1>
+        <p style="text-align: center; color: #6B7280; margin-bottom: 24px; font-size: 15px;">
+            Tạo tài khoản quản trị viên mới cho hệ thống
+        </p>
+
+        <div th:if="${success}" class="panel" style="background: #D1FAE5; border: 2px solid #10B981; margin-bottom: 20px;">
+            <strong>✅</strong> <span th:text="${success}"></span>
+            <div style="margin-top: 15px;">
+                <a th:href="@{/login}" class="btn-main" style="text-decoration: none; display: inline-block;">
+                    🔐 Đăng nhập ngay
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${error}" class="panel" style="background: #FEE2E2; border: 2px solid #EF4444; margin-bottom: 20px;">
+            <strong>❌</strong> <span th:text="${error}"></span>
+        </div>
+
+        <form method="post" th:action="@{/admin/setup}">
+            <label>
+                <span style="display: block; margin-bottom: 6px;">📧 Email</span>
+                <input type="email" name="email" placeholder="admin@example.com" required>
+            </label>
+            <label>
+                <span style="display: block; margin-bottom: 6px;">🔒 Mật khẩu</span>
+                <input type="password" name="password" placeholder="Mật khẩu mạnh" required minlength="6">
+            </label>
+            <label>
+                <span style="display: block; margin-bottom: 6px;">👤 Tên hiển thị</span>
+                <input type="text" name="displayName" placeholder="Tên Admin" required>
+            </label>
+
+            <button type="submit" class="btn-main" style="margin-top: 20px; background: #F59E0B; border-color: #F59E0B;">
+                👑 Tạo tài khoản Admin
+            </button>
+        </form>
+
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #E5E7EB;">
+            <p style="text-align: center; color: #6B7280; font-size: 13px;">
+                💡 Bạn có thể tạo nhiều tài khoản admin nếu cần
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

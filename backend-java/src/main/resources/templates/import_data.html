@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Import Dữ liệu</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="logo">Kid Nani</div>
+        <nav>
+            <a th:href="@{/dashboard}">Trang chính</a>
+            <a th:href="@{/lessons}">Tất cả bài học</a>
+            <a th:href="@{/mywords}">Sổ tay từ vựng</a>
+            <a th:href="@{/practice}">Ôn tập</a>
+            <a th:href="@{/minigame}">Mini game</a>
+            <a th:href="@{/leaderboard}">Bảng xếp hạng</a>
+            <a th:href="@{/shop}">Cửa hàng tim</a>
+            <a th:href="@{/logout}">Đăng xuất</a>
+        </nav>
+    </aside>
+    <main class="main">
+        <h1>📥 Import Dữ liệu Bài học</h1>
+        
+        <div th:if="${success}" class="success" style="margin: 20px 0; padding: 15px; background: #D1FAE5; color: #065F46; border-radius: 8px; border: 2px solid #10B981;">
+            <strong>✓</strong> <span th:text="${success}"></span>
+        </div>
+        
+        <div th:if="${warning}" style="margin: 20px 0; padding: 15px; background: #FEF3C7; color: #92400E; border-radius: 8px; border: 2px solid #F59E0B;">
+            <strong>⚠️</strong> <span th:text="${warning}"></span>
+        </div>
+        
+        <div th:if="${error}" class="error" style="margin: 20px 0; padding: 15px; background: #FEE2E2; color: #991B1B; border-radius: 8px; border: 2px solid #EF4444;">
+            <strong>✗</strong> <span th:text="${error}"></span>
+        </div>
+
+        <div class="panel" style="margin: 20px 0;">
+            <h3>Import từ file JSON</h3>
+            <p>Chọn file JSON chứa dữ liệu bài học và ngữ pháp để import vào hệ thống.</p>
+            
+            <form method="post" th:action="@{/admin/import}" enctype="multipart/form-data" style="margin-top: 20px;">
+                <label style="display: block; margin-bottom: 15px;">
+                    <strong>Chọn file JSON:</strong>
+                    <input type="file" name="file" accept=".json" required 
+                           style="margin-top: 8px; padding: 10px; width: 100%; border: 2px solid #E5E7EB; border-radius: 8px;">
+                </label>
+                <button type="submit" class="btn-main big">📥 Import Dữ liệu</button>
+            </form>
+        </div>
+
+        <div class="panel" style="background: #F0FDF4; border: 2px solid #58CC02;">
+            <h3 style="color: #059669;">📋 Format JSON mẫu:</h3>
+            <pre style="background: white; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code>{
+  "lessons": [
+    {
+      "title": "Lesson title",
+      "description": "Description",
+      "level": "GRADE3",
+      "lessonType": "VOCABULARY",
+      "contentHtml": "&lt;ul&gt;&lt;li&gt;word – nghĩa&lt;/li&gt;&lt;/ul&gt;",
+      "orderIndex": 0,
+      "partName": "PHẦN 1, CỬA 1",
+      "xpReward": 10
+    }
+  ],
+  "grammar": [
+    {
+      "title": "Grammar title",
+      "description": "Description",
+      "level": "GRADE3",
+      "topic": "Present Simple",
+      "contentHtml": "Grammar explanation...",
+      "examples": "I play, You play, He plays",
+      "orderIndex": 1,
+      "partName": "PHẦN 1, CỬA 2",
+      "xpReward": 15
+    }
+  ]
+}</code></pre>
+            <p style="margin-top: 15px; color: #059669;">
+                <strong>Lưu ý:</strong> File JSON mẫu có sẵn tại: <code>lessons_data_grade345.json</code>
+            </p>
+        </div>
+
+        <!-- Section: Import từ vựng ETS 2024 -->
+        <div class="panel" style="margin: 30px 0; background: #EFF6FF; border: 2px solid #3B82F6;">
+            <h3 style="color: #1E40AF; margin-top: 0;">📚 Import Từ vựng ETS 2024</h3>
+            <p style="color: #1E40AF;">Import từ vựng từ các file CSV trong thư mục <code>Tieng-Anh</code> (LISTENING và READING)</p>
+            
+            <!-- Thống kê -->
+            <div style="background: white; padding: 1rem; border-radius: 8px; margin: 1rem 0; border: 1px solid #DBEAFE;">
+                <h4 style="margin-top: 0; color: #1E40AF;">📊 Thống kê từ vựng hiện tại:</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="text-align: center; padding: 0.75rem; background: #F3F4F6; border-radius: 6px;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #1F2937;" th:text="${vocabularyCount}">0</div>
+                        <div style="font-size: 0.875rem; color: #6B7280;">Tổng từ vựng</div>
+                    </div>
+                    <div style="text-align: center; padding: 0.75rem; background: #FEE2E2; border-radius: 6px;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #DC2626;" th:text="${listeningCount}">0</div>
+                        <div style="font-size: 0.875rem; color: #991B1B;">LISTENING</div>
+                    </div>
+                    <div style="text-align: center; padding: 0.75rem; background: #DBEAFE; border-radius: 6px;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #2563EB;" th:text="${readingCount}">0</div>
+                        <div style="font-size: 0.875rem; color: #1E40AF;">READING</div>
+                    </div>
+                    <div style="text-align: center; padding: 0.75rem; background: #D1FAE5; border-radius: 6px;" th:if="${estimatedLessons > 0}">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #059669;" th:text="${estimatedLessons}">0</div>
+                        <div style="font-size: 0.875rem; color: #065F46;">Bài học có thể tạo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form import từ vựng -->
+            <form method="post" th:action="@{/admin/import/vocabulary}" style="margin-top: 20px;">
+                <div style="background: #FEF3C7; border: 2px solid #F59E0B; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                    <strong>💡 Hướng dẫn:</strong>
+                    <ul style="margin: 10px 0 0 20px; color: #92400E;">
+                        <li>Đảm bảo thư mục <code>Tieng-Anh</code> nằm trong thư mục <code>backend-java</code></li>
+                        <li>Thư mục phải chứa 2 thư mục con: <code>ETS 2024 – LISTENING</code> và <code>ETS 2024 READING</code></li>
+                        <li>Mỗi thư mục con chứa 10 file CSV: <code>TEST 1.csv</code> đến <code>TEST 10.csv</code></li>
+                        <li>Sau khi import, bạn có thể tạo bài học từ từ vựng bằng nút bên dưới</li>
+                    </ul>
+                </div>
+
+                <div style="margin: 20px 0;">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: white; border: 2px solid #3B82F6; border-radius: 8px;">
+                        <input type="checkbox" name="importAll" value="true" style="width: 20px; height: 20px; cursor: pointer;">
+                        <strong style="color: #1E40AF;">Import tất cả từ vựng từ thư mục Tieng-Anh</strong>
+                    </label>
+                </div>
+
+                <div style="margin: 20px 0; border-top: 1px solid #DBEAFE; padding-top: 20px;">
+                    <p style="color: #1E40AF; margin-bottom: 15px;"><strong>Hoặc upload file CSV cụ thể:</strong></p>
+                    <label style="display: block; margin-bottom: 10px;">
+                        <strong>Chọn file CSV:</strong>
+                        <input type="file" name="file" accept=".csv" 
+                               style="margin-top: 8px; padding: 10px; width: 100%; border: 2px solid #E5E7EB; border-radius: 8px;">
+                    </label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 10px;">
+                        <label>
+                            <strong>Loại test:</strong>
+                            <select name="testType" style="margin-top: 8px; padding: 10px; width: 100%; border: 2px solid #E5E7EB; border-radius: 8px;">
+                                <option value="">-- Chọn --</option>
+                                <option value="LISTENING">LISTENING</option>
+                                <option value="READING">READING</option>
+                            </select>
+                        </label>
+                        <label>
+                            <strong>Số test (1-10):</strong>
+                            <input type="number" name="testNumber" min="1" max="10" 
+                                   style="margin-top: 8px; padding: 10px; width: 100%; border: 2px solid #E5E7EB; border-radius: 8px;">
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-main big" style="background: #3B82F6; border-color: #3B82F6; margin-top: 15px;">
+                    📥 Import Từ vựng
+                </button>
+            </form>
+        </div>
+
+        <!-- Section: Tạo bài học theo cấu trúc ô cửa (Gate) -->
+        <div class="panel" style="margin: 30px 0; background: #F0FDF4; border: 2px solid #10B981;" th:if="${vocabularyCount > 0}">
+            <h3 style="color: #059669; margin-top: 0;">🚪 Tạo Bài học theo Cấu trúc Ô cửa</h3>
+            <p style="color: #065F46;">
+                Tạo bài học theo cấu trúc 5 ô cửa. Mỗi test được chia nhỏ thành 10 bài (test1.1, test1.2, ... test1.10) để dễ học.
+            </p>
+            
+            <div style="background: #D1FAE5; border: 2px solid #10B981; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                <strong>✨ Cấu trúc ô cửa:</strong>
+                <ul style="margin: 10px 0 0 20px; color: #065F46;">
+                    <li><strong>Ô cửa 1 (GRADE1):</strong> Test 1-20 → Mỗi test chia thành 10 bài nhỏ</li>
+                    <li><strong>Ô cửa 2 (GRADE2):</strong> Test 21-40 → Mỗi test chia thành 10 bài nhỏ</li>
+                    <li><strong>Ô cửa 3 (GRADE3):</strong> Test 41-60 → Mỗi test chia thành 10 bài nhỏ</li>
+                    <li><strong>Ô cửa 4 (GRADE4):</strong> Test 61-80 → Mỗi test chia thành 10 bài nhỏ</li>
+                    <li><strong>Ô cửa 5 (GRADE5):</strong> Test 81-100 → Mỗi test chia thành 10 bài nhỏ</li>
+                    <li>Mỗi bài học sẽ có <strong>15 XP</strong> và tự động tạo quiz</li>
+                    <li>Sau khi hoàn thành hết bài trong một ô cửa, nhận rương thưởng và mở khóa ô cửa tiếp theo</li>
+                </ul>
+            </div>
+
+            <form method="post" th:action="@{/admin/import/create-gate-lessons}" 
+                  style="margin-top: 20px;">
+                <button type="submit" class="btn-main big" style="background: #10B981; border-color: #10B981; width: 100%;"
+                        onclick="return confirm('Bạn có chắc muốn tạo bài học theo cấu trúc ô cửa? Hệ thống sẽ chia nhỏ mỗi test thành 10 bài học.');">
+                    🚪 Tạo Bài học theo Cấu trúc Ô cửa
+                </button>
+            </form>
+
+            <p style="margin-top: 15px; color: #059669; font-size: 0.875rem;">
+                <strong>Lưu ý:</strong> Hệ thống sẽ tự động bỏ qua các bài học đã tồn tại. 
+                Mỗi test sẽ được chia thành 10 bài nhỏ để học sinh dễ học hơn.
+            </p>
+        </div>
+
+        <!-- Section: Tạo bài học từ từ vựng (cách cũ) -->
+        <div class="panel" style="margin: 30px 0; background: #FEF3C7; border: 2px solid #F59E0B;" th:if="${vocabularyCount > 0}">
+            <h3 style="color: #92400E; margin-top: 0;">🎓 Tạo Bài học từ Từ vựng ETS (Cách cũ)</h3>
+            <p style="color: #92400E;">
+                Tự động tạo các bài học trong lộ trình học từ từ vựng ETS đã import. 
+                Hệ thống sẽ nhóm từ vựng theo TEST và Part để tạo bài học.
+            </p>
+            
+            <div style="background: #FEF3C7; border: 2px solid #F59E0B; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                <strong>⚠️ Lưu ý:</strong> Cách này tạo bài học theo cấu trúc cũ. 
+                Khuyến nghị sử dụng "Tạo Bài học theo Cấu trúc Ô cửa" ở trên.
+            </div>
+
+            <form method="post" th:action="@{/admin/import/vocabulary-to-lessons}" 
+                  id="createLessonsForm"
+                  style="margin-top: 20px;">
+                <button type="submit" class="btn-main big" style="background: #F59E0B; border-color: #F59E0B; width: 100%;"
+                        th:onclick="'return confirm(\'Bạn có chắc muốn tạo bài học từ từ vựng ETS? Hệ thống sẽ tạo khoảng ' + ${estimatedLessons} + ' bài học mới.\');'">
+                    🎓 Tạo Bài học từ Từ vựng ETS (Cách cũ)
+                </button>
+            </form>
+        </div>
+
+        <!-- Section: Tạo Quiz cho bài học đã tồn tại -->
+        <div class="panel" style="margin: 30px 0; background: #EFF6FF; border: 2px solid #3B82F6;" th:if="${vocabularyCount > 0}">
+            <h3 style="color: #1E40AF; margin-top: 0;">📝 Tạo Quiz cho Bài học ETS</h3>
+            <p style="color: #1E40AF;">
+                Tạo quiz questions (mini test) cho các bài học ETS đã tồn tại nhưng chưa có quiz.
+                Mỗi bài học sẽ có tối đa 10 câu hỏi về nghĩa của từ vựng.
+            </p>
+            
+            <div style="background: #DBEAFE; border: 2px solid #3B82F6; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                <strong>💡 Thông tin:</strong>
+                <ul style="margin: 10px 0 0 20px; color: #1E40AF;">
+                    <li>Hệ thống sẽ tìm tất cả bài học ETS (LISTENING/READING TEST và Part)</li>
+                    <li>Chỉ tạo quiz cho các bài học chưa có quiz</li>
+                    <li>Mỗi bài học sẽ có tối đa 10 câu hỏi trắc nghiệm</li>
+                    <li>Câu hỏi dạng: "Từ [word] có nghĩa là gì?"</li>
+                </ul>
+            </div>
+
+            <form method="post" th:action="@{/admin/import/create-quiz-for-lessons}" 
+                  style="margin-top: 20px;">
+                <button type="submit" class="btn-main big" style="background: #3B82F6; border-color: #3B82F6; width: 100%;"
+                        onclick="return confirm('Bạn có chắc muốn tạo quiz cho các bài học ETS đã tồn tại?');">
+                    📝 Tạo Quiz cho Bài học ETS
+                </button>
+            </form>
+        </div>
+
+        <!-- Section: Tạo Quiz cho TẤT CẢ Bài học -->
+        <div class="panel" style="margin: 30px 0; background: #F0FDF4; border: 2px solid #10B981;">
+            <h3 style="color: #059669; margin-top: 0;">🎯 Tạo Quiz cho TẤT CẢ Bài học</h3>
+            <p style="color: #065F46;">
+                Tự động tạo quiz (mini test) cho <strong>TẤT CẢ</strong> các bài học chưa có quiz.
+                Hệ thống sẽ tự động phân tích nội dung bài học để tạo câu hỏi.
+            </p>
+            
+            <div style="background: #D1FAE5; border: 2px solid #10B981; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                <strong>✨ Tính năng:</strong>
+                <ul style="margin: 10px 0 0 20px; color: #065F46;">
+                    <li>Tự động tạo quiz cho <strong>TẤT CẢ</strong> bài học (không chỉ ETS)</li>
+                    <li>Phân tích nội dung HTML để trích xuất từ vựng</li>
+                    <li>Hỗ trợ nhiều format: "word – meaning", "word: meaning", HTML lists</li>
+                    <li>Mỗi bài học sẽ có tối đa 10 câu hỏi trắc nghiệm</li>
+                    <li>Chỉ tạo quiz cho các bài học chưa có quiz</li>
+                    <li>Tự động tạo quiz khi import bài học mới</li>
+                </ul>
+            </div>
+
+            <form method="post" th:action="@{/admin/import/create-quiz-for-all-lessons}" 
+                  style="margin-top: 20px;">
+                <button type="submit" class="btn-main big" style="background: #10B981; border-color: #10B981; width: 100%;"
+                        onclick="return confirm('Bạn có chắc muốn tạo quiz cho TẤT CẢ các bài học chưa có quiz? Quá trình này có thể mất vài phút.');">
+                    🎯 Tạo Quiz cho TẤT CẢ Bài học
+                </button>
+            </form>
+        </div>
+
+        <div class="panel" style="margin: 30px 0; background: #FEF3C7; border: 2px solid #F59E0B;" th:if="${vocabularyCount == 0}">
+            <h3 style="color: #92400E; margin-top: 0;">⚠️ Chưa có từ vựng</h3>
+            <p style="color: #92400E;">
+                Bạn cần import từ vựng trước khi có thể tạo bài học. 
+                Hãy sử dụng form "Import Từ vựng ETS 2024" ở trên.
+            </p>
+        </div>
+    </main>
+</div>
+</body>
+</html>
+

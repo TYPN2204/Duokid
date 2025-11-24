@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Bài kiểm tra: ' + ${test.title}">Bài kiểm tra</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/tests}" class="active">📝 Bài kiểm tra</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="lesson-header">
+            <h1>📝 <span th:text="${test.title}">Bài kiểm tra</span></h1>
+            <div class="stats-bar" style="max-width: 400px;">
+                <div class="stat-item">
+                    <span class="stat-icon">❤️</span>
+                    <span>Tim: <b th:text="${user.hearts}">5</b></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">⚡</span>
+                    <span>XP: <b th:text="${user.xp}">0</b></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel" style="background: #FEF3C7; border: 2px solid #F59E0B; margin: 20px 0;">
+            <h3 style="color: #92400E;">⚠️ Lưu ý quan trọng:</h3>
+            <ul style="color: #92400E; line-height: 1.8;">
+                <li>Bài kiểm tra này xuất hiện sau khi bạn hoàn thành <strong th:text="${test.afterLessons}">5</strong> bài học</li>
+                <li>Điểm đạt: <strong th:text="${test.passingScore}">70</strong>/100</li>
+                <li>Nếu đạt điểm: Nhận <strong th:text="${test.xpReward}">20</strong> XP và <strong th:text="${test.gemsReward}">10</strong> Gems</li>
+                <li>Nếu không đạt: Mất <strong th:text="${test.heartsLostOnFail}">1</strong> tim ❤️</li>
+            </ul>
+        </div>
+
+        <div th:if="${test.instructions}" class="panel" style="margin: 20px 0;">
+            <h3>📋 Hướng dẫn:</h3>
+            <p th:utext="${test.instructions}"></p>
+        </div>
+
+        <form th:action="@{'/test/' + ${test.id} + '/submit'}" method="post" class="quiz-form">
+            <div class="quiz-question" th:each="q,iter : ${questions}">
+                <h3 th:text="${iter.index + 1} + '. ' + ${q.question}">Câu hỏi</h3>
+                <label class="quiz-option">
+                    <input type="radio" th:name="${'answer_' + q.id}" value="A" required> 
+                    <span><strong>A.</strong> <span th:text="${q.optionA}"></span></span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" th:name="${'answer_' + q.id}" value="B"> 
+                    <span><strong>B.</strong> <span th:text="${q.optionB}"></span></span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" th:name="${'answer_' + q.id}" value="C"> 
+                    <span><strong>C.</strong> <span th:text="${q.optionC}"></span></span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" th:name="${'answer_' + q.id}" value="D"> 
+                    <span><strong>D.</strong> <span th:text="${q.optionD}"></span></span>
+                </label>
+                <hr style="margin: 20px 0;">
+            </div>
+            <button type="submit" class="btn-main big" style="width: 100%; margin-top: 20px;">
+                ✅ Nộp bài kiểm tra
+            </button>
+        </form>
+    </main>
+</div>
+<style>
+.quiz-option {
+    display: block;
+    padding: 12px;
+    margin: 8px 0;
+    background: #F9FAFB;
+    border: 2px solid #E5E7EB;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quiz-option:hover {
+    background: #F3F4F6;
+    border-color: #58CC02;
+}
+
+.quiz-option input[type="radio"] {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.quiz-option input[type="radio"]:checked + span {
+    color: #059669;
+    font-weight: 600;
+}
+
+.quiz-question {
+    margin: 30px 0;
+    padding: 20px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    border: 2px solid #E5E7EB;
+}
+
+.quiz-question h3 {
+    color: #1F2937;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+</style>
+</body>
+</html>
+

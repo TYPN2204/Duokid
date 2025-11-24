@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cửa hàng tim</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}" class="active">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <h1>Cửa hàng tim</h1>
+        <div class="stats-bar" style="max-width: 400px; margin-bottom: 20px;">
+            <div class="stat-item">
+                <span class="stat-icon">⚡</span>
+                <span>XP: <b th:text="${user.xp}">0</b></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">💎</span>
+                <span>Gems: <b th:text="${user.gems}">500</b></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">❤️</span>
+                <span>Tim: <b th:text="${user.hearts}">5</b></span>
+            </div>
+        </div>
+        <p th:if="${reason == 'no-hearts'}">
+            Bạn đã hết tim nên không thể làm bài kiểm tra. Hãy mua thêm tim để tiếp tục học nhé!
+        </p>
+        <div class="panel">
+            <h3>Mua tim bằng XP</h3>
+            <p>Mỗi tim tốn <b th:text="${xpPerHeart}">10</b> XP.</p>
+            <form method="post" th:action="@{/shop/buy-hearts}" class="shop-form">
+                <input type="hidden" name="paymentType" value="XP">
+                <label>Số tim muốn mua:
+                    <input type="number" name="amount" min="1" value="1">
+                </label>
+                <button type="submit" class="btn-main big">Mua tim bằng XP</button>
+            </form>
+            <p class="error" th:if="${error}" th:text="${error}"></p>
+            <p class="success" th:if="${success}" th:text="${success}"></p>
+        </div>
+        
+        <div class="panel">
+            <h3>Mua tim bằng Gems</h3>
+            <p>Mỗi tim tốn <b>200</b> Gems.</p>
+            <form method="post" th:action="@{/shop/buy-hearts}" class="shop-form">
+                <input type="hidden" name="paymentType" value="GEMS">
+                <label>Số tim muốn mua:
+                    <input type="number" name="amount" min="1" value="1">
+                </label>
+                <button type="submit" class="btn-main big" style="background: #F59E0B; border-color: #F59E0B;">
+                    Mua tim bằng Gems 💎
+                </button>
+            </form>
+        </div>
+        <div class="panel">
+            <h3>Lịch sử giao dịch</h3>
+            <p th:if="${#lists.isEmpty(history)}">Chưa có giao dịch nào.</p>
+            <table class="history-table" th:if="${!#lists.isEmpty(history)}">
+                <thead>
+                <tr>
+                    <th>Thời gian</th>
+                    <th>Loại</th>
+                    <th>Tim</th>
+                    <th>XP</th>
+                    <th>Ghi chú</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tx : ${history}">
+                    <td th:text="${tx.time}">2025-11-17</td>
+                    <td th:text="${tx.type}">BUY</td>
+                    <td th:text="${tx.heartsChanged}">+1</td>
+                    <td th:text="${tx.xpChanged}">-10</td>
+                    <td th:text="${tx.note}">Mua tim</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+</body>
+</html>

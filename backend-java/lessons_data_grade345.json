@@ -1,0 +1,193 @@
+{
+  "lessons": [
+    {
+      "title": "Animals - Grade 3",
+      "description": "Học từ vựng về các loài động vật",
+      "level": "GRADE3",
+      "lessonType": "VOCABULARY",
+      "contentHtml": "<h3>Từ vựng về động vật</h3><ul><li><b>elephant</b> – con voi</li><li><b>tiger</b> – con hổ</li><li><b>lion</b> – con sư tử</li><li><b>bear</b> – con gấu</li><li><b>monkey</b> – con khỉ</li><li><b>zebra</b> – con ngựa vằn</li><li><b>giraffe</b> – con hươu cao cổ</li><li><b>panda</b> – con gấu trúc</li></ul>",
+      "orderIndex": 0,
+      "partName": "PHẦN 1, CỬA 1",
+      "xpReward": 10
+    },
+    {
+      "title": "Present Simple Tense",
+      "description": "Học cách sử dụng thì hiện tại đơn",
+      "level": "GRADE3",
+      "lessonType": "GRAMMAR",
+      "contentHtml": "<h3>Thì hiện tại đơn (Present Simple)</h3><p>Thì hiện tại đơn dùng để diễn tả:</p><ul><li>Thói quen hàng ngày</li><li>Sự thật hiển nhiên</li><li>Lịch trình cố định</li></ul><h4>Công thức:</h4><ul><li><b>I/You/We/They + V (nguyên mẫu)</b></li><li><b>He/She/It + V(s/es)</b></li></ul>",
+      "orderIndex": 1,
+      "partName": "PHẦN 1, CỬA 2",
+      "xpReward": 15
+    },
+    {
+      "title": "Food and Drinks - Grade 3",
+      "description": "Học từ vựng về đồ ăn và thức uống",
+      "level": "GRADE3",
+      "lessonType": "VOCABULARY",
+      "contentHtml": "<h3>Từ vựng về đồ ăn và thức uống</h3><ul><li><b>sandwich</b> – bánh mì kẹp</li><li><b>pizza</b> – bánh pizza</li><li><b>hamburger</b> – bánh hamburger</li><li><b>juice</b> – nước ép</li><li><b>coffee</b> – cà phê</li><li><b>tea</b> – trà</li><li><b>water</b> – nước</li><li><b>cake</b> – bánh ngọt</li></ul>",
+      "orderIndex": 2,
+      "partName": "PHẦN 1, CỬA 3",
+      "xpReward": 10
+    },
+    {
+      "title": "Present Continuous Tense",
+      "description": "Học cách sử dụng thì hiện tại tiếp diễn",
+      "level": "GRADE3",
+      "lessonType": "GRAMMAR",
+      "contentHtml": "<h3>Thì hiện tại tiếp diễn (Present Continuous)</h3><p>Thì hiện tại tiếp diễn dùng để diễn tả:</p><ul><li>Hành động đang xảy ra ngay bây giờ</li><li>Hành động tạm thời</li><li>Kế hoạch trong tương lai gần</li></ul><h4>Công thức:</h4><p><b>Subject + am/is/are + V-ing</b></p><p>Ví dụ: I am playing, You are reading, He is sleeping</p>",
+      "orderIndex": 3,
+      "partName": "PHẦN 1, CỬA 4",
+      "xpReward": 15
+    },
+    {
+      "title": "School Subjects - Grade 4",
+      "description": "Học từ vựng về các môn học",
+      "level": "GRADE4",
+      "lessonType": "VOCABULARY",
+      "contentHtml": "<h3>Từ vựng về môn học</h3><ul><li><b>mathematics</b> – toán học</li><li><b>science</b> – khoa học</li><li><b>English</b> – tiếng Anh</li><li><b>history</b> – lịch sử</li><li><b>geography</b> – địa lý</li><li><b>art</b> – mỹ thuật</li><li><b>music</b> – âm nhạc</li><li><b>physical education</b> – thể dục</li></ul>",
+      "orderIndex": 0,
+      "partName": "PHẦN 1, CỬA 1",
+      "xpReward": 10
+    },
+    {
+      "title": "Past Simple Tense",
+      "description": "Học cách sử dụng thì quá khứ đơn",
+      "level": "GRADE4",
+      "lessonType": "GRAMMAR",
+      "contentHtml": "<h3>Thì quá khứ đơn (Past Simple)</h3><p>Thì quá khứ đơn dùng để diễn tả:</p><ul><li>Hành động đã xảy ra và kết thúc trong quá khứ</li><li>Sự kiện đã xảy ra ở thời điểm xác định trong quá khứ</li></ul><h4>Công thức:</h4><ul><li><b>Regular verbs: Subject + V-ed</b></li><li><b>Irregular verbs: Subject + V2 (past form)</b></li></ul><p>Ví dụ: I played, You went, He studied</p>",
+      "orderIndex": 1,
+      "partName": "PHẦN 1, CỬA 2",
+      "xpReward": 15
+    },
+    {
+      "title": "Weather and Seasons - Grade 4",
+      "description": "Học từ vựng về thời tiết và các mùa",
+      "level": "GRADE4",
+      "lessonType": "VOCABULARY",
+      "contentHtml": "<h3>Từ vựng về thời tiết và mùa</h3><ul><li><b>sunny</b> – nắng</li><li><b>rainy</b> – mưa</li><li><b>cloudy</b> – nhiều mây</li><li><b>windy</b> – có gió</li><li><b>snowy</b> – có tuyết</li><li><b>spring</b> – mùa xuân</li><li><b>summer</b> – mùa hè</li><li><b>autumn</b> – mùa thu</li><li><b>winter</b> – mùa đông</li></ul>",
+      "orderIndex": 2,
+      "partName": "PHẦN 1, CỬA 3",
+      "xpReward": 10
+    },
+    {
+      "title": "Future Simple Tense",
+      "description": "Học cách sử dụng thì tương lai đơn",
+      "level": "GRADE4",
+      "lessonType": "GRAMMAR",
+      "contentHtml": "<h3>Thì tương lai đơn (Future Simple)</h3><p>Thì tương lai đơn dùng để diễn tả:</p><ul><li>Hành động sẽ xảy ra trong tương lai</li><li>Lời hứa, dự định</li><li>Dự đoán</li></ul><h4>Công thức:</h4><p><b>Subject + will/shall + V (nguyên mẫu)</b></p><p>Ví dụ: I will go, You will study, He will play</p>",
+      "orderIndex": 3,
+      "partName": "PHẦN 1, CỬA 4",
+      "xpReward": 15
+    },
+    {
+      "title": "Jobs and Professions - Grade 5",
+      "description": "Học từ vựng về nghề nghiệp",
+      "level": "GRADE5",
+      "lessonType": "VOCABULARY",
+      "contentHtml": "<h3>Từ vựng về nghề nghiệp</h3><ul><li><b>doctor</b> – bác sĩ</li><li><b>teacher</b> – giáo viên</li><li><b>engineer</b> – kỹ sư</li><li><b>nurse</b> – y tá</li><li><b>pilot</b> – phi công</li><li><b>chef</b> – đầu bếp</li><li><b>artist</b> – nghệ sĩ</li><li><b>singer</b> – ca sĩ</li><li><b>farmer</b> – nông dân</li><li><b>police officer</b> – cảnh sát</li></ul>",
+      "orderIndex": 0,
+      "partName": "PHẦN 1, CỬA 1",
+      "xpReward": 10
+    },
+    {
+      "title": "Present Perfect Tense",
+      "description": "Học cách sử dụng thì hiện tại hoàn thành",
+      "level": "GRADE5",
+      "lessonType": "GRAMMAR",
+      "contentHtml": "<h3>Thì hiện tại hoàn thành (Present Perfect)</h3><p>Thì hiện tại hoàn thành dùng để diễn tả:</p><ul><li>Hành động đã xảy ra trong quá khứ nhưng kết quả còn liên quan đến hiện tại</li><li>Kinh nghiệm trong cuộc sống</li><li>Hành động vừa mới xảy ra</li></ul><h4>Công thức:</h4><p><b>Subject + have/has + V3 (past participle)</b></p><p>Ví dụ: I have played, You have studied, He has gone</p>",
+      "orderIndex": 1,
+      "partName": "PHẦN 1, CỬA 2",
+      "xpReward": 15
+    },
+    {
+      "title": "Sports and Hobbies - Grade 5",
+      "description": "Học từ vựng về thể thao và sở thích",
+      "level": "GRADE5",
+      "lessonType": "VOCABULARY",
+      "contentHtml": "<h3>Từ vựng về thể thao và sở thích</h3><ul><li><b>football</b> – bóng đá</li><li><b>basketball</b> – bóng rổ</li><li><b>swimming</b> – bơi lội</li><li><b>cycling</b> – đạp xe</li><li><b>reading</b> – đọc sách</li><li><b>drawing</b> – vẽ tranh</li><li><b>singing</b> – ca hát</li><li><b>dancing</b> – nhảy múa</li><li><b>cooking</b> – nấu ăn</li><li><b>gardening</b> – làm vườn</li></ul>",
+      "orderIndex": 2,
+      "partName": "PHẦN 1, CỬA 3",
+      "xpReward": 10
+    },
+    {
+      "title": "Prepositions",
+      "description": "Học cách sử dụng giới từ",
+      "level": "GRADE5",
+      "lessonType": "GRAMMAR",
+      "contentHtml": "<h3>Giới từ (Prepositions)</h3><p>Giới từ dùng để chỉ vị trí, thời gian, phương hướng.</p><h4>Giới từ chỉ vị trí:</h4><ul><li><b>in</b> – trong (in the box, in the room)</li><li><b>on</b> – trên (on the table, on the wall)</li><li><b>at</b> – tại (at school, at home)</li><li><b>under</b> – dưới (under the bed)</li><li><b>next to</b> – bên cạnh</li><li><b>between</b> – giữa</li></ul><h4>Giới từ chỉ thời gian:</h4><ul><li><b>in</b> – trong (in the morning, in 2024)</li><li><b>on</b> – vào (on Monday, on my birthday)</li><li><b>at</b> – lúc (at 3 o'clock, at night)</li></ul>",
+      "orderIndex": 3,
+      "partName": "PHẦN 1, CỬA 4",
+      "xpReward": 15
+    }
+  ],
+  "grammar": [
+    {
+      "title": "Present Simple Tense",
+      "description": "Học cách sử dụng thì hiện tại đơn",
+      "level": "GRADE3",
+      "topic": "Present Simple",
+      "contentHtml": "<h3>Thì hiện tại đơn (Present Simple)</h3><p>Thì hiện tại đơn dùng để diễn tả:</p><ul><li>Thói quen hàng ngày: <i>I brush my teeth every morning.</i></li><li>Sự thật hiển nhiên: <i>The sun rises in the east.</i></li><li>Lịch trình cố định: <i>The train leaves at 8 AM.</i></li></ul><h4>Công thức:</h4><ul><li><b>I/You/We/They + V (nguyên mẫu)</b><br>Ví dụ: I play, You study, We go</li><li><b>He/She/It + V(s/es)</b><br>Ví dụ: He plays, She studies, It goes</li></ul>",
+      "examples": "I play football every day. She studies English. They go to school.",
+      "orderIndex": 1,
+      "partName": "PHẦN 1, CỬA 2",
+      "xpReward": 15
+    },
+    {
+      "title": "Present Continuous Tense",
+      "description": "Học cách sử dụng thì hiện tại tiếp diễn",
+      "level": "GRADE3",
+      "topic": "Present Continuous",
+      "contentHtml": "<h3>Thì hiện tại tiếp diễn (Present Continuous)</h3><p>Thì hiện tại tiếp diễn dùng để diễn tả:</p><ul><li>Hành động đang xảy ra ngay bây giờ: <i>I am reading a book now.</i></li><li>Hành động tạm thời: <i>She is staying with her friend this week.</i></li><li>Kế hoạch trong tương lai gần: <i>We are going to the park tomorrow.</i></li></ul><h4>Công thức:</h4><p><b>Subject + am/is/are + V-ing</b></p><p>Ví dụ: I am playing, You are reading, He is sleeping, She is studying</p>",
+      "examples": "I am playing football now. You are reading a book. He is sleeping. She is studying English.",
+      "orderIndex": 3,
+      "partName": "PHẦN 1, CỬA 4",
+      "xpReward": 15
+    },
+    {
+      "title": "Past Simple Tense",
+      "description": "Học cách sử dụng thì quá khứ đơn",
+      "level": "GRADE4",
+      "topic": "Past Simple",
+      "contentHtml": "<h3>Thì quá khứ đơn (Past Simple)</h3><p>Thì quá khứ đơn dùng để diễn tả:</p><ul><li>Hành động đã xảy ra và kết thúc trong quá khứ: <i>I visited my grandmother yesterday.</i></li><li>Sự kiện đã xảy ra ở thời điểm xác định: <i>She was born in 2010.</i></li></ul><h4>Công thức:</h4><ul><li><b>Regular verbs: Subject + V-ed</b><br>Ví dụ: I played, You studied, We walked</li><li><b>Irregular verbs: Subject + V2 (past form)</b><br>Ví dụ: I went, You saw, He came</li></ul>",
+      "examples": "I played football yesterday. You studied English last week. He went to school this morning.",
+      "orderIndex": 1,
+      "partName": "PHẦN 1, CỬA 2",
+      "xpReward": 15
+    },
+    {
+      "title": "Future Simple Tense",
+      "description": "Học cách sử dụng thì tương lai đơn",
+      "level": "GRADE4",
+      "topic": "Future Simple",
+      "contentHtml": "<h3>Thì tương lai đơn (Future Simple)</h3><p>Thì tương lai đơn dùng để diễn tả:</p><ul><li>Hành động sẽ xảy ra trong tương lai: <i>I will go to the park tomorrow.</i></li><li>Lời hứa: <i>I will help you with your homework.</i></li><li>Dự đoán: <i>It will rain tomorrow.</i></li></ul><h4>Công thức:</h4><p><b>Subject + will/shall + V (nguyên mẫu)</b></p><p>Ví dụ: I will go, You will study, He will play, We shall see</p>",
+      "examples": "I will go to school tomorrow. You will study English next week. He will play football this afternoon.",
+      "orderIndex": 3,
+      "partName": "PHẦN 1, CỬA 4",
+      "xpReward": 15
+    },
+    {
+      "title": "Present Perfect Tense",
+      "description": "Học cách sử dụng thì hiện tại hoàn thành",
+      "level": "GRADE5",
+      "topic": "Present Perfect",
+      "contentHtml": "<h3>Thì hiện tại hoàn thành (Present Perfect)</h3><p>Thì hiện tại hoàn thành dùng để diễn tả:</p><ul><li>Hành động đã xảy ra trong quá khứ nhưng kết quả còn liên quan đến hiện tại: <i>I have finished my homework.</i></li><li>Kinh nghiệm trong cuộc sống: <i>I have been to Paris.</i></li><li>Hành động vừa mới xảy ra: <i>She has just arrived.</i></li></ul><h4>Công thức:</h4><p><b>Subject + have/has + V3 (past participle)</b></p><p>Ví dụ: I have played, You have studied, He has gone, She has seen</p>",
+      "examples": "I have played football. You have studied English. He has gone to school. She has seen that movie.",
+      "orderIndex": 1,
+      "partName": "PHẦN 1, CỬA 2",
+      "xpReward": 15
+    },
+    {
+      "title": "Prepositions",
+      "description": "Học cách sử dụng giới từ",
+      "level": "GRADE5",
+      "topic": "Prepositions",
+      "contentHtml": "<h3>Giới từ (Prepositions)</h3><p>Giới từ dùng để chỉ vị trí, thời gian, phương hướng.</p><h4>Giới từ chỉ vị trí:</h4><ul><li><b>in</b> – trong (in the box, in the room, in the car)</li><li><b>on</b> – trên (on the table, on the wall, on the floor)</li><li><b>at</b> – tại (at school, at home, at the park)</li><li><b>under</b> – dưới (under the bed, under the table)</li><li><b>next to</b> – bên cạnh (next to the door)</li><li><b>between</b> – giữa (between two chairs)</li><li><b>behind</b> – phía sau (behind the house)</li><li><b>in front of</b> – phía trước (in front of the school)</li></ul><h4>Giới từ chỉ thời gian:</h4><ul><li><b>in</b> – trong (in the morning, in 2024, in January)</li><li><b>on</b> – vào (on Monday, on my birthday, on Christmas)</li><li><b>at</b> – lúc (at 3 o'clock, at night, at noon)</li></ul>",
+      "examples": "The book is on the table. I go to school at 7 AM. She was born in 2010. The cat is under the bed.",
+      "orderIndex": 3,
+      "partName": "PHẦN 1, CỬA 4",
+      "xpReward": 15
+    }
+  ]
+}
+

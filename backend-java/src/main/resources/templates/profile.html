@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin học sinh - Kid Nani</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/tests}">📝 Bài kiểm tra</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}" class="active">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="lesson-header">
+            <h1>👤 Thông tin học sinh</h1>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="success" style="margin: 20px 0; padding: 15px; background: #D1FAE5; color: #065F46; border-radius: 8px; border: 2px solid #10B981;">
+            <strong>✓</strong> <span th:text="${success}"></span>
+        </div>
+        
+        <div th:if="${error}" class="error" style="margin: 20px 0; padding: 15px; background: #FEE2E2; color: #991B1B; border-radius: 8px; border: 2px solid #EF4444;">
+            <strong>✗</strong> <span th:text="${error}"></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px; margin-top: 30px;">
+            <!-- Left Column: Avatar and Stats -->
+            <div>
+                <!-- Avatar Section -->
+                <div class="panel" style="text-align: center; padding: 30px;">
+                    <div style="margin-bottom: 20px;">
+                        <img th:src="${user.avatar ?: '/avatar1.svg'}" 
+                             alt="Avatar" 
+                             style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #E5E7EB; margin-bottom: 15px;">
+                    </div>
+                    <h3 style="margin-bottom: 10px;" th:text="${user.displayName}">Tên học sinh</h3>
+                    <p style="color: #6B7280; margin-bottom: 20px;" th:text="${user.email}">email@example.com</p>
+                    
+                    <!-- Upload Avatar Form -->
+                    <form method="post" th:action="@{/profile/upload-avatar}" enctype="multipart/form-data" style="margin-top: 20px;">
+                        <label style="display: block; margin-bottom: 10px;">
+                            <input type="file" 
+                                   name="avatar" 
+                                   accept="image/*" 
+                                   required
+                                   style="margin-bottom: 10px; padding: 8px; width: 100%; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 14px;">
+                        </label>
+                        <button type="submit" class="btn-main" style="width: 100%;">
+                            📷 Tải ảnh đại diện
+                        </button>
+                        <p style="font-size: 12px; color: #9CA3AF; margin-top: 8px;">
+                            Chấp nhận: JPG, PNG, GIF (tối đa 5MB)
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Statistics Card -->
+                <div class="panel" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">📊 Thống kê</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #F9FAFB; border-radius: 8px;">
+                            <span style="font-size: 20px;">🔥</span>
+                            <div style="flex: 1; margin-left: 12px;">
+                                <div style="font-weight: 600;">Chuỗi ngày</div>
+                                <div style="color: #6B7280; font-size: 14px;" th:text="${user.streak} + ' ngày'">0 ngày</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #F9FAFB; border-radius: 8px;">
+                            <span style="font-size: 20px;">⚡</span>
+                            <div style="flex: 1; margin-left: 12px;">
+                                <div style="font-weight: 600;">Điểm XP</div>
+                                <div style="color: #6B7280; font-size: 14px;" th:text="${user.xp}">0</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #F9FAFB; border-radius: 8px;">
+                            <span style="font-size: 20px;">💎</span>
+                            <div style="flex: 1; margin-left: 12px;">
+                                <div style="font-weight: 600;">Gems</div>
+                                <div style="color: #6B7280; font-size: 14px;" th:text="${user.gems}">0</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #F9FAFB; border-radius: 8px;">
+                            <span style="font-size: 20px;">❤️</span>
+                            <div style="flex: 1; margin-left: 12px;">
+                                <div style="font-weight: 600;">Tim</div>
+                                <div style="color: #6B7280; font-size: 14px;" th:text="${user.hearts}">0</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #F9FAFB; border-radius: 8px;">
+                            <span style="font-size: 20px;">📚</span>
+                            <div style="flex: 1; margin-left: 12px;">
+                                <div style="font-weight: 600;">Bài học đã hoàn thành</div>
+                                <div style="color: #6B7280; font-size: 14px;" th:text="${completedLessonsCount}">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Profile Information -->
+            <div>
+                <!-- Personal Information -->
+                <div class="panel">
+                    <h3 style="margin-bottom: 20px;">📝 Thông tin cá nhân</h3>
+                    <form method="post" th:action="@{/profile/update-info}">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">
+                                Tên hiển thị *
+                            </label>
+                            <input type="text" 
+                                   name="displayName" 
+                                   th:value="${user.displayName}"
+                                   required
+                                   style="width: 100%; padding: 12px; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 16px;">
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">
+                                Email
+                            </label>
+                            <input type="email" 
+                                   th:value="${user.email}"
+                                   disabled
+                                   style="width: 100%; padding: 12px; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 16px; background: #F3F4F6; color: #6B7280;">
+                            <p style="font-size: 12px; color: #9CA3AF; margin-top: 5px;">Email không thể thay đổi</p>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">
+                                Lớp học
+                            </label>
+                            <select name="gradeLevel" 
+                                    style="width: 100%; padding: 12px; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 16px;">
+                                <option value="GRADE1" th:selected="${user.gradeLevel == 'GRADE1'}">Lớp 1</option>
+                                <option value="GRADE2" th:selected="${user.gradeLevel == 'GRADE2'}">Lớp 2</option>
+                                <option value="GRADE3" th:selected="${user.gradeLevel == 'GRADE3'}">Lớp 3</option>
+                                <option value="GRADE4" th:selected="${user.gradeLevel == 'GRADE4'}">Lớp 4</option>
+                                <option value="GRADE5" th:selected="${user.gradeLevel == 'GRADE5'}">Lớp 5</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn-main big" style="width: 100%;">
+                            💾 Lưu thông tin
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Study Progress -->
+                <div class="panel" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 20px;">📈 Tiến độ học tập</h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-weight: 600;">Bài học đã hoàn thành</span>
+                                <span style="color: #059669; font-weight: 600;" th:text="${completedLessonsCount}">0</span>
+                            </div>
+                            <div style="background: #E5E7EB; border-radius: 8px; height: 8px; overflow: hidden;">
+                                <div style="background: #10B981; height: 100%; width: 100%; border-radius: 8px; transition: width 0.3s;"></div>
+                            </div>
+                        </div>
+                        <div style="padding: 15px; background: #F0FDF4; border-radius: 8px; border: 2px solid #10B981;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 24px;">🎯</span>
+                                <div>
+                                    <div style="font-weight: 600; color: #059669;">Mục tiêu hôm nay</div>
+                                    <div style="color: #6B7280; font-size: 14px; margin-top: 4px;">
+                                        Tiếp tục học để duy trì chuỗi ngày học tập!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
+

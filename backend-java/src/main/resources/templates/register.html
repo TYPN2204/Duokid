@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký - Kid Nani</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body class="auth-body">
+<div class="auth-container">
+    <div class="chibi-character">🌟</div>
+    <div class="auth-card">
+        <div class="avatar-icon">
+            <svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'>
+                <circle cx='40' cy='40' r='40' fill='#3B82F6'/>
+                <circle cx='40' cy='32' r='12' fill='#FFFFFF'/>
+                <path d='M 20 60 Q 20 50, 40 50 Q 60 50, 60 60 L 60 80 L 20 80 Z' fill='#FFFFFF'/>
+            </svg>
+        </div>
+        <h1 style="margin-bottom: 8px;">Bắt đầu hành trình học tập! 🎓</h1>
+        <p style="text-align: center; color: #6B7280; margin-bottom: 20px; font-size: 14px;">
+            Tạo tài khoản để học tiếng Anh miễn phí
+        </p>
+        
+        <form method="post" th:action="@{/register}">
+            <label>
+                <span style="display: block; margin-bottom: 6px;">👤 Họ tên</span>
+                <input type="text" name="name" placeholder="Nhập họ tên của bạn" required>
+            </label>
+            <label>
+                <span style="display: block; margin-bottom: 6px;">📧 Email</span>
+                <input type="email" name="email" placeholder="Nhập email của bạn" required>
+            </label>
+            <label>
+                <span style="display: block; margin-bottom: 6px;">🔒 Mật khẩu</span>
+                <input type="password" name="password" placeholder="Tạo mật khẩu (tối thiểu 6 ký tự)" required minlength="6">
+            </label>
+            <label>
+                <span style="display: block; margin-bottom: 6px;">📚 Lớp hiện tại</span>
+                <select name="gradeLevel" required>
+                    <option value="">-- Chọn lớp --</option>
+                    <option value="GRADE1" th:selected="${selectedGrade == 'GRADE1'}">Lớp 1</option>
+                    <option value="GRADE2" th:selected="${selectedGrade == 'GRADE2'}">Lớp 2</option>
+                    <option value="GRADE3" th:selected="${selectedGrade == 'GRADE3'}">Lớp 3</option>
+                    <option value="GRADE4" th:selected="${selectedGrade == 'GRADE4'}">Lớp 4</option>
+                    <option value="GRADE5" th:selected="${selectedGrade == 'GRADE5'}">Lớp 5</option>
+                </select>
+            </label>
+            
+            <div th:if="${error}" class="error" style="margin-top: 12px; padding: 12px; background: #FEE2E2; color: #DC2626; border-radius: 8px; border: 1px solid #FCA5A5; font-size: 14px;">
+                <strong>⚠️</strong> <span th:text="${error}"></span>
+            </div>
+            
+            <button type="submit" class="btn-main" style="margin-top: 16px;">
+                ✨ Tạo tài khoản
+            </button>
+        </form>
+        
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #E5E7EB;">
+            <p style="text-align: center; color: #6B7280; margin-bottom: 12px; font-size: 15px; font-weight: 500;">
+                Đã có tài khoản?
+            </p>
+            <a th:href="@{/login}" 
+               style="display: block; 
+                      text-align: center; 
+                      background: #10B981; 
+                      border: 3px solid #1F2937; 
+                      color: #FFFFFF; 
+                      text-decoration: none; 
+                      padding: 12px 20px; 
+                      border-radius: 12px; 
+                      font-weight: 700; 
+                      font-size: 16px;
+                      transition: all 0.2s ease;
+                      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                      margin-bottom: 8px;">
+                🔐 Đăng nhập ngay
+            </a>
+            <p style="text-align: center; font-size: 13px; color: #9CA3AF;">
+                Hoặc <a th:href="@{/login}" style="color: #10B981; font-weight: 600; text-decoration: underline;">click vào đây</a> để đăng nhập
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,224 @@
+{
+  "tests": [
+    {
+      "title": "Bài kiểm tra từ vựng lớp 1 - Phần 1",
+      "description": "Kiểm tra từ vựng cơ bản về màu sắc, số đếm và đồ vật",
+      "level": "GRADE1",
+      "afterLessons": 5,
+      "passingScore": 70,
+      "heartsLostOnFail": 1,
+      "xpReward": 30,
+      "gemsReward": 15,
+      "instructions": "Chọn đáp án đúng cho mỗi câu hỏi. Bạn cần đạt ít nhất 70% để vượt qua bài kiểm tra.",
+      "questions": [
+        {
+          "question": "What color is the sun?",
+          "optionA": "Blue",
+          "optionB": "Yellow",
+          "optionC": "Green",
+          "optionD": "Red",
+          "correctOption": "B",
+          "explanation": "The sun is yellow. Mặt trời có màu vàng."
+        },
+        {
+          "question": "How many fingers do you have on one hand?",
+          "optionA": "Three",
+          "optionB": "Four",
+          "optionC": "Five",
+          "optionD": "Six",
+          "correctOption": "C",
+          "explanation": "You have five fingers on one hand. Bạn có 5 ngón tay trên một bàn tay."
+        },
+        {
+          "question": "What is this? 🍎",
+          "optionA": "Banana",
+          "optionB": "Apple",
+          "optionC": "Orange",
+          "optionD": "Grape",
+          "correctOption": "B",
+          "explanation": "This is an apple. Đây là quả táo."
+        },
+        {
+          "question": "What do you say in the morning?",
+          "optionA": "Good night",
+          "optionB": "Good morning",
+          "optionC": "Good afternoon",
+          "optionD": "Goodbye",
+          "correctOption": "B",
+          "explanation": "We say 'Good morning' in the morning. Chúng ta nói 'Chào buổi sáng' vào buổi sáng."
+        },
+        {
+          "question": "What animal says 'Meow'?",
+          "optionA": "Dog",
+          "optionB": "Cat",
+          "optionC": "Bird",
+          "optionD": "Fish",
+          "correctOption": "B",
+          "explanation": "A cat says 'Meow'. Con mèo kêu 'Meow'."
+        },
+        {
+          "question": "What number comes after 3?",
+          "optionA": "2",
+          "optionB": "4",
+          "optionC": "5",
+          "optionD": "6",
+          "correctOption": "B",
+          "explanation": "The number after 3 is 4. Số sau số 3 là số 4."
+        },
+        {
+          "question": "What color is the sky?",
+          "optionA": "Red",
+          "optionB": "Green",
+          "optionC": "Blue",
+          "optionD": "Yellow",
+          "correctOption": "C",
+          "explanation": "The sky is blue. Bầu trời có màu xanh."
+        },
+        {
+          "question": "What do you use to write?",
+          "optionA": "Pencil",
+          "optionB": "Spoon",
+          "optionC": "Plate",
+          "optionD": "Cup",
+          "correctOption": "A",
+          "explanation": "You use a pencil to write. Bạn dùng bút chì để viết."
+        },
+        {
+          "question": "How many legs does a dog have?",
+          "optionA": "Two",
+          "optionB": "Three",
+          "optionC": "Four",
+          "optionD": "Five",
+          "correctOption": "C",
+          "explanation": "A dog has four legs. Con chó có 4 chân."
+        },
+        {
+          "question": "What is the opposite of 'big'?",
+          "optionA": "Small",
+          "optionB": "Tall",
+          "optionC": "Long",
+          "optionD": "Wide",
+          "correctOption": "A",
+          "explanation": "The opposite of 'big' is 'small'. Từ trái nghĩa của 'to' là 'nhỏ'."
+        }
+      ]
+    },
+    {
+      "title": "Bài kiểm tra từ vựng lớp 2 - Phần 1",
+      "description": "Kiểm tra từ vựng về gia đình, cảm xúc và hoạt động hàng ngày",
+      "level": "GRADE2",
+      "afterLessons": 8,
+      "passingScore": 75,
+      "heartsLostOnFail": 1,
+      "xpReward": 40,
+      "gemsReward": 20,
+      "instructions": "Đọc kỹ câu hỏi và chọn đáp án đúng. Bạn cần đạt ít nhất 75% để vượt qua.",
+      "questions": [
+        {
+          "question": "Who is your mother's mother?",
+          "optionA": "Sister",
+          "optionB": "Grandmother",
+          "optionC": "Aunt",
+          "optionD": "Cousin",
+          "correctOption": "B",
+          "explanation": "Your mother's mother is your grandmother. Mẹ của mẹ bạn là bà ngoại."
+        },
+        {
+          "question": "How do you feel when you are happy?",
+          "optionA": "Sad",
+          "optionB": "Angry",
+          "optionC": "Happy",
+          "optionD": "Tired",
+          "correctOption": "C",
+          "explanation": "When you are happy, you feel happy. Khi bạn vui, bạn cảm thấy hạnh phúc."
+        },
+        {
+          "question": "What do you do in the morning?",
+          "optionA": "Go to bed",
+          "optionB": "Wake up",
+          "optionC": "Have dinner",
+          "optionD": "Watch TV",
+          "correctOption": "B",
+          "explanation": "In the morning, you wake up. Vào buổi sáng, bạn thức dậy."
+        },
+        {
+          "question": "What is the past tense of 'go'?",
+          "optionA": "Goed",
+          "optionB": "Went",
+          "optionC": "Gone",
+          "optionD": "Going",
+          "correctOption": "B",
+          "explanation": "The past tense of 'go' is 'went'. Quá khứ của 'đi' là 'đã đi'."
+        },
+        {
+          "question": "What do you call your father's brother?",
+          "optionA": "Uncle",
+          "optionB": "Cousin",
+          "optionC": "Nephew",
+          "optionD": "Brother",
+          "correctOption": "A",
+          "explanation": "Your father's brother is your uncle. Anh/em trai của bố bạn là chú/bác."
+        }
+      ]
+    },
+    {
+      "title": "Bài kiểm tra ngữ pháp lớp 3 - Present Simple",
+      "description": "Kiểm tra cách sử dụng thì hiện tại đơn",
+      "level": "GRADE3",
+      "afterLessons": 10,
+      "passingScore": 80,
+      "heartsLostOnFail": 2,
+      "xpReward": 50,
+      "gemsReward": 25,
+      "instructions": "Chọn đáp án đúng để hoàn thành câu. Bạn cần đạt ít nhất 80% để vượt qua.",
+      "questions": [
+        {
+          "question": "I _____ to school every day.",
+          "optionA": "go",
+          "optionB": "goes",
+          "optionC": "going",
+          "optionD": "went",
+          "correctOption": "A",
+          "explanation": "With 'I', we use 'go' (base form). Với 'I', chúng ta dùng 'go' (dạng nguyên thể)."
+        },
+        {
+          "question": "She _____ her homework every evening.",
+          "optionA": "do",
+          "optionB": "does",
+          "optionC": "doing",
+          "optionD": "did",
+          "correctOption": "B",
+          "explanation": "With 'she', we use 'does'. Với 'she', chúng ta dùng 'does'."
+        },
+        {
+          "question": "They _____ football on weekends.",
+          "optionA": "play",
+          "optionB": "plays",
+          "optionC": "playing",
+          "optionD": "played",
+          "correctOption": "A",
+          "explanation": "With 'they', we use 'play' (base form). Với 'they', chúng ta dùng 'play' (dạng nguyên thể)."
+        },
+        {
+          "question": "He _____ not like vegetables.",
+          "optionA": "do",
+          "optionB": "does",
+          "optionC": "is",
+          "optionD": "are",
+          "correctOption": "B",
+          "explanation": "With 'he', we use 'does' for negative. Với 'he', chúng ta dùng 'does' cho câu phủ định."
+        },
+        {
+          "question": "We _____ English at school.",
+          "optionA": "study",
+          "optionB": "studies",
+          "optionC": "studying",
+          "optionD": "studied",
+          "correctOption": "A",
+          "explanation": "With 'we', we use 'study' (base form). Với 'we', chúng ta dùng 'study' (dạng nguyên thể)."
+        }
+      ]
+    }
+  ]
+}
+

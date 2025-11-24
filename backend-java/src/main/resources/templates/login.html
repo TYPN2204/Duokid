@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập - Kid Nani</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body class="auth-body">
+<div class="auth-container">
+    <div class="chibi-character">🦉</div>
+    <div class="auth-card">
+        <div class="avatar-icon">
+            <svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'>
+                <circle cx='40' cy='40' r='40' fill='#58CC02'/>
+                <circle cx='40' cy='32' r='12' fill='#FFFFFF'/>
+                <path d='M 20 60 Q 20 50, 40 50 Q 60 50, 60 60 L 60 80 L 20 80 Z' fill='#FFFFFF'/>
+            </svg>
+        </div>
+        <h1 style="margin-bottom: 8px;">Chào mừng trở lại! 👋</h1>
+        <p style="text-align: center; color: #6B7280; margin-bottom: 20px; font-size: 14px;">
+            Đăng nhập để tiếp tục học tiếng Anh
+        </p>
+        
+        <form method="post" th:action="@{/login}">
+            <label>
+                <span style="display: block; margin-bottom: 6px;">📧 Email</span>
+                <input type="email" name="email" placeholder="Nhập email của bạn" required>
+            </label>
+            <label>
+                <span style="display: block; margin-bottom: 6px;">🔒 Mật khẩu</span>
+                <input type="password" name="password" placeholder="Nhập mật khẩu" required>
+            </label>
+            
+            <div th:if="${error}" class="error" style="margin-top: 12px; padding: 12px; background: #FEE2E2; color: #DC2626; border-radius: 8px; border: 1px solid #FCA5A5; font-size: 14px;">
+                <strong>⚠️</strong> <span th:text="${error}"></span>
+            </div>
+            
+            <button type="submit" class="btn-main" style="margin-top: 16px;">
+                🚀 Đăng nhập
+            </button>
+        </form>
+        
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #E5E7EB;">
+            <p style="text-align: center; color: #6B7280; margin-bottom: 12px; font-size: 15px; font-weight: 500;">
+                Chưa có tài khoản?
+            </p>
+            <a th:href="@{/register}" 
+               style="display: block; 
+                      text-align: center; 
+                      background: #3B82F6; 
+                      border: 3px solid #1F2937; 
+                      color: #FFFFFF; 
+                      text-decoration: none; 
+                      padding: 12px 20px; 
+                      border-radius: 12px; 
+                      font-weight: 700; 
+                      font-size: 16px;
+                      transition: all 0.2s ease;
+                      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+                      margin-bottom: 8px;">
+                ✨ Đăng ký ngay
+            </a>
+            <p style="text-align: center; font-size: 13px; color: #9CA3AF;">
+                Hoặc <a th:href="@{/register}" style="color: #3B82F6; font-weight: 600; text-decoration: underline;">click vào đây</a> để đăng ký
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

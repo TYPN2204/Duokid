@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sổ tay từ vựng</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+    <main class="main">
+        <h1>Sổ tay từ vựng của em</h1>
+        <p>Lưu lại những từ/cụm từ em thích để ôn tập hằng ngày.</p>
+
+        <div class="panel">
+            <h3>Thêm từ mới</h3>
+            <form class="myword-form" method="post" th:action="@{/mywords}">
+                <label>
+                    Từ tiếng Anh *
+                    <input type="text" name="englishWord" maxlength="60"
+                           placeholder="cat, go to school..."
+                           th:value="${englishWord}">
+                </label>
+                <label>
+                    Nghĩa tiếng Việt *
+                    <input type="text" name="vietnameseMeaning" maxlength="120"
+                           placeholder="con mèo, đi học..."
+                           th:value="${vietnameseMeaning}">
+                </label>
+                <label>
+                    Phiên âm (IPA)
+                    <input type="text" name="ipa" maxlength="80"
+                           placeholder="/kæt/, /ˈskuːl/"
+                           th:value="${ipa}">
+                </label>
+                <label>
+                    Câu ví dụ
+                    <input type="text" name="exampleSentence" maxlength="180"
+                           placeholder="The cat is white."
+                           th:value="${exampleSentence}">
+                </label>
+                <button type="submit" class="btn-main">Lưu vào sổ tay</button>
+            </form>
+            <p class="error" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+            <p class="success" th:if="${successMessage}" th:text="${successMessage}"></p>
+        </div>
+
+        <div class="panel">
+            <h3>Từ đã lưu</h3>
+            <p class="myword-empty" th:if="${#lists.isEmpty(words)}">
+                Chưa có từ nào. Thêm từ mới ở bên trên nhé! 🌟
+            </p>
+            <div class="myword-grid" th:if="${!#lists.isEmpty(words)}">
+                <div class="myword-card" th:each="w : ${words}">
+                    <div class="myword-en" th:text="${w.englishWord}">cat</div>
+                    <div class="myword-ipa" th:if="${w.ipa}" th:text="${w.ipa}">/kæt/</div>
+                    <div class="myword-vi" th:text="${w.vietnameseMeaning}">con mèo</div>
+                    <p class="myword-example" th:if="${w.exampleSentence}">
+                        <strong>Ví dụ:</strong>
+                        <span th:text="${w.exampleSentence}">The cat is cute.</span>
+                    </p>
+                    <form th:action="@{'/mywords/' + ${w.id} + '/delete'}"
+                          method="post">
+                        <button class="btn-main" type="submit">Xóa</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
+
