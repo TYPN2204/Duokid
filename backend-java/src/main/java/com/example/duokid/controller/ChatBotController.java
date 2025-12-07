@@ -132,13 +132,35 @@ public class ChatBotController {
                 return ResponseEntity.ok(jsonF);
             }
 
-            List<Vocabulary> results = vocabularyService.searchVocabularies(word.trim());
-            if (results != null && !results.isEmpty()) {
-                // Prefer exact match on english word
+                List<Vocabulary> results = vocabularyService.searchVocabularies(word.trim());
+                if (results != null && !results.isEmpty()) {
+                // Prefer exact match on english word or whole-word matches in fields
+                String kw = word.trim();
+                java.util.regex.Pattern whole = java.util.regex.Pattern.compile("\\b" + java.util.regex.Pattern.quote(kw) + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE);
+
+                // First try exact englishWord match
                 Vocabulary v = results.stream()
-                        .filter(x -> x.getEnglishWord() != null && x.getEnglishWord().equalsIgnoreCase(word.trim()))
-                        .findFirst()
-                        .orElse(results.get(0));
+                    .filter(x -> x.getEnglishWord() != null && x.getEnglishWord().equalsIgnoreCase(kw))
+                    .findFirst()
+                    .orElse(null);
+
+                // Then try whole-word match across englishWord, vietnameseMeaning, exampleSentence
+                if (v == null) {
+                    v = results.stream()
+                        .filter(x -> (x.getEnglishWord() != null && whole.matcher(x.getEnglishWord()).find())
+                            || (x.getVietnameseMeaning() != null && whole.matcher(x.getVietnameseMeaning()).find())
+                            || (x.getExampleSentence() != null && whole.matcher(x.getExampleSentence()).find()))
+                        .findFirst().orElse(null);
+                }
+
+                // Fallback to first result only if it contains a whole-word match
+                if (v == null) {
+                    Vocabulary candidate = results.get(0);
+                    boolean candidateMatches = (candidate.getEnglishWord() != null && whole.matcher(candidate.getEnglishWord()).find())
+                            || (candidate.getVietnameseMeaning() != null && whole.matcher(candidate.getVietnameseMeaning()).find())
+                            || (candidate.getExampleSentence() != null && whole.matcher(candidate.getExampleSentence()).find());
+                    if (candidateMatches) v = candidate;
+                }
                 // Build a simple JSON response matching Python format
                 String json = String.format(
                     "{\"word\":\"%s\",\"phonetic\":\"%s\",\"meaning\":\"%s\",\"example\":\"%s\"}",
@@ -153,13 +175,38 @@ public class ChatBotController {
             System.out.println("VOCAB NOT FOUND IN DB: " + word);
             try {
                 java.util.List<Lesson> lessons = lessonService.findAll();
-                java.util.regex.Pattern p = java.util.regex.Pattern.compile("<b>\\s*" + java.util.regex.Pattern.quote(word) + "\\s*</b>\\s*[–-]\\s*([^<]+)", java.util.regex.Pattern.CASE_INSENSITIVE);
+                // More robust lesson HTML lookup: find <b>word</b> then extract surrounding <li> text
                 for (Lesson lesson : lessons) {
                     String html = lesson.getContentHtml();
                     if (html == null) continue;
-                    java.util.regex.Matcher m = p.matcher(html);
-                    if (m.find()) {
-                        String meaning = m.group(1).trim();
+                    String lowered = html.toLowerCase();
+                    String token = "<b>" + word.toLowerCase() + "</b>";
+                    int idx = lowered.indexOf(token);
+                    if (idx == -1) continue;
+
+                    // find enclosing <li> ... </li>
+                    int liStart = lowered.lastIndexOf("<li", idx);
+                    int liEnd = lowered.indexOf("</li>", idx);
+                    if (liStart == -1 || liEnd == -1) continue;
+                    String li = html.substring(liStart, liEnd);
+
+                    // try to split by common separators (–, -, —)
+                    String meaning = null;
+                    if (li.contains("–")) {
+                        meaning = li.substring(li.indexOf("–") + 1).replaceAll("<.*?>", "").trim();
+                    } else if (li.contains(" - ")) {
+                        meaning = li.substring(li.indexOf(" - ") + 3).replaceAll("<.*?>", "").trim();
+                    } else if (li.contains("—")) {
+                        meaning = li.substring(li.indexOf("—") + 1).replaceAll("<.*?>", "").trim();
+                    } else {
+                        // fallback: remove tags and take text after closing </b>
+                        int bClose = li.toLowerCase().indexOf("</b>");
+                        if (bClose != -1 && bClose + 4 < li.length()) {
+                            meaning = li.substring(bClose + 4).replaceAll("<.*?>", "").trim();
+                        }
+                    }
+
+                    if (meaning != null && !meaning.isEmpty()) {
                         String jsonLesson = String.format(
                             "{\"word\":\"%s\",\"phonetic\":\"/word/\",\"meaning\":\"%s\",\"example\":\"From lesson: %s\"}",
                             word, meaning.replaceAll("\"","'"), lesson.getTitle().replaceAll("\"","'")
