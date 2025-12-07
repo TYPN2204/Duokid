@@ -30,7 +30,8 @@
             <a th:href="@{/minigame}">🎮 Mini game</a>
             <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
             <a th:href="@{/shop}">🛒 Cửa hàng</a>
-            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/chatbot}">🤖 ChatBot</a>
+            <a th:href="@{/chat}">💬 Chat bạn</a>
             <a th:href="@{/profile}">👤 Hồ sơ</a>
             <span class="menu-divider"></span>
             <a th:href="@{/logout}">🚪 Đăng xuất</a>
@@ -51,29 +52,6 @@
                     🎮 Luyện tập với game hình ảnh
                 </button>
             </form>
-        </div>
-
-        <div class="panel">
-            <h3>🤖 AI chấm điểm câu trả lời</h3>
-            <p><strong>Đề bài:</strong> <span th:text="${practiceQuestion}">Question</span></p>
-            <p><strong>Câu mẫu:</strong> <span th:text="${practiceExpected}">Expected</span></p>
-            <form th:action="@{/practice/grade}" method="post" class="ai-form">
-                <input type="hidden" name="lessonId" th:value="${lesson.id}">
-                <input type="hidden" name="question" th:value="${practiceQuestion}">
-                <input type="hidden" name="expected" th:value="${practiceExpected}">
-                <textarea name="studentAnswer"
-                          rows="3"
-                          placeholder="Nhập câu tiếng Anh của em..."
-                          th:text="${studentAnswer}"></textarea>
-                <button type="submit" class="btn-main">Chấm điểm</button>
-            </form>
-            <p class="error" th:if="${gradeError}" th:text="${gradeError}"></p>
-            <div class="panel" th:if="${gradeScore != null}">
-                <p><strong>Điểm:</strong> <span th:text="${gradeScore}">80</span>/100</p>
-                <p><strong>Feedback (EN):</strong> <span th:text="${gradeCommentEn}"></span></p>
-                <p><strong>Nhận xét (VI):</strong> <span th:text="${gradeCommentVi}"></span></p>
-                <p><strong>Câu mẫu:</strong> <span th:text="${practiceExpected}"></span></p>
-            </div>
         </div>
     </main>
 </div>

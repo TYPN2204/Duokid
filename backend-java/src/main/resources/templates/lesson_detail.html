@@ -30,7 +30,8 @@
             <a th:href="@{/minigame}">🎮 Mini game</a>
             <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
             <a th:href="@{/shop}">🛒 Cửa hàng</a>
-            <a th:href="@{/chat}">💬 Chat</a>
+            <a th:href="@{/chatbot}">🤖 ChatBot</a>
+            <a th:href="@{/chat}">💬 Chat bạn</a>
             <a th:href="@{/profile}">👤 Hồ sơ</a>
             <span class="menu-divider"></span>
             <a th:href="@{/logout}">🚪 Đăng xuất</a>
@@ -89,34 +90,6 @@
             <div th:if="${isCompleted}" style="padding: 12px 24px; background: #D1FAE5; color: #065F46; border-radius: 8px; border: 2px solid #10B981; display: inline-flex; align-items: center; gap: 8px;">
                 <span style="font-size: 20px;">✅</span>
                 <strong>Đã vượt ải! Bài học tiếp theo đã được mở khóa.</strong>
-            </div>
-        </div>
-
-        <div class="panel ai-panel">
-            <h3>AI gợi ý câu tiếng Anh</h3>
-            <p>Nhập 1 câu tiếng Việt (liên quan đến chủ đề bài học), hệ thống sẽ gợi ý 1 câu tiếng Anh đơn giản.</p>
-            <form th:action="@{'/lessons/' + ${lesson.id} + '/suggest'}"
-                  method="post"
-                  class="ai-form">
-                <textarea name="vnText"
-                          rows="2"
-                          placeholder="Ví dụ: Em thích con mèo màu trắng."
-                          th:text="${vnText}"> </textarea>
-                <button type="submit" class="btn-main">Gợi ý câu tiếng Anh</button>
-            </form>
-            <p class="error" th:if="${aiError}" th:text="${aiError}"></p>
-            <div th:if="${aiSuggestion}" class="ai-result-block">
-                <p><strong>Câu gợi ý:</strong></p>
-                <p class="ai-result">
-                    <span th:text="${aiSuggestion}"></span>
-                    <button class="tts-btn"
-                            th:if="${aiAudioUrl}"
-                            type="button"
-                            th:data-audio-url="${aiAudioUrl}"
-                            onclick="playAudioFromButton(this)">
-                        🔊 Nghe
-                    </button>
-                </p>
             </div>
         </div>
 

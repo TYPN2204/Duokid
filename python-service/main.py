@@ -49,6 +49,26 @@ class GradeResponse(BaseModel):
     commentVi: str
 
 
+class ChatRequest(BaseModel):
+    message: str
+    context: str | None = None
+
+
+class ChatResponse(BaseModel):
+    reply: str
+
+
+class VocabularyRequest(BaseModel):
+    word: str
+
+
+class VocabularyResponse(BaseModel):
+    word: str
+    phonetic: str
+    meaning: str
+    example: str
+
+
 TOPIC_LIBRARY = {
     "greetings": [
         "Hello, nice to meet you.",
@@ -201,3 +221,132 @@ def grade(req: GradeRequest):
         commentEn=comment_en,
         commentVi=comment_vi,
     )
+
+
+# ChatBot API
+VOCABULARY_LIBRARY = {
+    "apple": {
+        "phonetic": "/ˈæp.əl/",
+        "meaning": "Quả táo",
+        "example": "I eat an apple every day."
+    },
+    "book": {
+        "phonetic": "/bʊk/",
+        "meaning": "Cuốn sách",
+        "example": "This book is very interesting."
+    },
+    "cat": {
+        "phonetic": "/kæt/",
+        "meaning": "Con mèo",
+        "example": "My cat is very cute."
+    },
+    "dog": {
+        "phonetic": "/dɔɡ/",
+        "meaning": "Con chó",
+        "example": "The dog runs in the park."
+    },
+    "happy": {
+        "phonetic": "/ˈhæp.i/",
+        "meaning": "Vui vẻ, hạnh phúc",
+        "example": "She is very happy today."
+    },
+    "hello": {
+        "phonetic": "/həˈloʊ/",
+        "meaning": "Xin chào",
+        "example": "Hello, how are you?"
+    },
+    "school": {
+        "phonetic": "/skuːl/",
+        "meaning": "Trường học",
+        "example": "I go to school every day."
+    },
+    "friend": {
+        "phonetic": "/frend/",
+        "meaning": "Bạn bè",
+        "example": "He is my best friend."
+    },
+    "family": {
+        "phonetic": "/ˈfæm.əl.i/",
+        "meaning": "Gia đình",
+        "example": "My family loves me very much."
+    },
+    "water": {
+        "phonetic": "/ˈwɔː.tɚ/",
+        "meaning": "Nước",
+        "example": "Drink water every day for your health."
+    }
+}
+
+
+@app.post("/api/chat", response_model=ChatResponse)
+def chat(req: ChatRequest):
+    """
+    Simple chatbot API for learning English
+    """
+    message = req.message.lower().strip()
+    
+    # Pattern matching for common questions
+    responses = {
+        "how are you": "I'm doing great! Thank you for asking. How about you?",
+        "hi": "Hello! How can I help you learn English today?",
+        "hello": "Hi there! What would you like to learn?",
+        "what is your name": "I'm ChatBot, your English learning assistant!",
+        "thank you": "You're welcome! Keep practicing English!",
+        "how to pronounce": "You can use the vocabulary lookup feature to hear pronunciation!",
+        "can you help": "Of course! I'm here to help you learn English. Ask me anything!",
+        "what is": "That's a great question! Try looking it up in the vocabulary section.",
+        "example": "I can provide examples! Use the vocabulary lookup feature.",
+        "phát âm": "You can listen to pronunciation in the vocabulary section by clicking the 🔊 button!",
+        "ví dụ": "Great! Try the vocabulary lookup feature to see examples.",
+        "từ": "Perfect! Let's explore vocabulary together using the lookup feature.",
+        "help": "I can help you with:\n1. Learning new vocabulary\n2. Understanding English phrases\n3. Providing examples\n4. Pronunciation tips\nWhat would you like help with?",
+    }
+    
+    # Check for exact or partial matches
+    for key, response in responses.items():
+        if key in message:
+            return ChatResponse(reply=response)
+    
+    # Default responses
+    default_responses = [
+        "That's an interesting question! Try using the vocabulary lookup feature to learn more.",
+        "Great question! Make sure to practice regularly to improve your English.",
+        "You're doing great! Keep practicing and learning new words every day.",
+        "That's a good point! Would you like to look up a specific word?",
+        "I appreciate your interest! Continue exploring vocabulary to master English."
+    ]
+    
+    import random
+    return ChatResponse(reply=random.choice(default_responses))
+
+
+@app.post("/api/vocabulary", response_model=VocabularyResponse)
+def lookup_vocabulary(req: VocabularyRequest):
+    """
+    Look up vocabulary with definition, pronunciation, and examples
+    """
+    word = req.word.lower().strip()
+    
+    # Check if word exists in library
+    if word in VOCABULARY_LIBRARY:
+        vocab = VOCABULARY_LIBRARY[word]
+        return VocabularyResponse(
+            word=word,
+            phonetic=vocab["phonetic"],
+            meaning=vocab["meaning"],
+            example=vocab["example"]
+        )
+    
+    # If not found, return a generic response
+    return VocabularyResponse(
+        word=word,
+        phonetic="/word/",
+        meaning=f"Sorry, I don't have this word in my vocabulary database yet. Try another word!",
+        example="Keep learning new words!"
+    )
+
+
+# Run the server
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5000)

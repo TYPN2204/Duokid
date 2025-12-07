@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>🤖 ChatBot - Trợ Lý Học Tập</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <script src="/grade-dropdown.js" defer></script>
+    <style>
+        .chatbot-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .chat-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .chat-panel h3 {
+            margin: 0 0 15px 0;
+            color: #1F2937;
+            font-size: 20px;
+            border-bottom: 3px solid #3B82F6;
+            padding-bottom: 10px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding-right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: #DBEAFE;
+        }
+
+        .message.bot .message-avatar {
+            background: #D1FAE5;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 12px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .message.user .message-bubble {
+            background: #3B82F6;
+            color: white;
+            text-align: left;
+        }
+
+        .message.bot .message-bubble {
+            background: #F0F9FF;
+            color: #1F2937;
+            border: 1px solid #BFDBFE;
+        }
+
+        .message.loading .message-bubble {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #6B7280;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .chat-input-area textarea {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            max-height: 80px;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input-area textarea:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+
+        .btn-send {
+            padding: 10px 15px;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            align-self: flex-end;
+            font-size: 14px;
+        }
+
+        .btn-send:hover {
+            background: #2563EB;
+            transform: scale(1.05);
+        }
+
+        .btn-send:disabled {
+            background: #D1D5DB;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .vocab-lookup {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .vocab-lookup input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .vocab-lookup input:focus {
+            outline: none;
+            border-color: #10B981;
+        }
+
+        .btn-lookup {
+            padding: 10px 15px;
+            background: #10B981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-lookup:hover {
+            background: #059669;
+        }
+
+        .vocab-result {
+            background: #ECFDF5;
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .vocab-result h4 {
+            margin: 0 0 10px 0;
+            color: #065F46;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vocab-result p {
+            margin: 8px 0;
+            color: #1F2937;
+            font-size: 14px;
+        }
+
+        .vocab-result .word {
+            font-weight: 700;
+            color: #10B981;
+            font-size: 16px;
+        }
+
+        .btn-sound {
+            padding: 8px 12px;
+            background: #10B981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .btn-sound:hover {
+            background: #059669;
+        }
+
+        .quick-tips {
+            background: #FEF3C7;
+            border: 2px solid #F59E0B;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .quick-tips h4 {
+            margin: 0 0 10px 0;
+            color: #92400E;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-tips p {
+            margin: 6px 0;
+            color: #78350F;
+            font-size: 13px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #9CA3AF;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 1024px) {
+            .chatbot-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .chat-panel {
+                height: auto;
+                min-height: 500px;
+            }
+
+            .message-bubble {
+                max-width: 100%;
+            }
+        }
+
+        .quick-responses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .quick-btn {
+            padding: 8px 12px;
+            background: #E0E7FF;
+            color: #4338CA;
+            border: 2px solid #C7D2FE;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            background: #C7D2FE;
+            transform: translateY(-2px);
+        }
+
+        .vocab-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .vocab-tab {
+            padding: 8px 12px;
+            background: #F3F4F6;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .vocab-tab.active {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <header class="top-nav">
+        <div class="logo">duokid</div>
+        <nav>
+            <a th:href="@{/dashboard}">🏠 HỌC</a>
+            <span class="menu-divider"></span>
+            <div class="grade-dropdown">
+                <span class="grade-dropdown-trigger">📚 Lớp học</span>
+                <div class="grade-dropdown-menu">
+                    <a th:href="@{/grade/GRADE1}">Lớp 1</a>
+                    <a th:href="@{/grade/GRADE2}">Lớp 2</a>
+                    <a th:href="@{/grade/GRADE3}">Lớp 3</a>
+                    <a th:href="@{/grade/GRADE4}">Lớp 4</a>
+                    <a th:href="@{/grade/GRADE5}">Lớp 5</a>
+                </div>
+            </div>
+            <span class="menu-divider"></span>
+            <a th:href="@{/mywords}">📝 Sổ tay</a>
+            <a th:href="@{/vocabulary}">📚 Từ vựng</a>
+            <a th:href="@{/practice}">🔄 Ôn tập</a>
+            <a th:href="@{/minigame}">🎮 Mini game</a>
+            <a th:href="@{/leaderboard}">🏆 Bảng xếp hạng</a>
+            <a th:href="@{/shop}">🛒 Cửa hàng</a>
+            <a th:href="@{/chatbot}" style="background: #E0E7FF; color: #4F46E5;">🤖 ChatBot</a>
+            <a th:href="@{/chat}">💬 Chat bạn</a>
+            <a th:href="@{/profile}">👤 Hồ sơ</a>
+            <span class="menu-divider"></span>
+            <a th:href="@{/logout}">🚪 Đăng xuất</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div style="margin-bottom: 20px;">
+            <h1>🤖 Trợ Lý Học Tập AI</h1>
+            <p>Hỏi câu hỏi, nhận trợ giúp và khám phá từ vựng mới cùng AI ChatBot!</p>
+        </div>
+
+        <div class="chatbot-container">
+            <!-- Chat Panel -->
+            <div class="chat-panel">
+                <h3>💬 Chat với AI</h3>
+                
+                <div class="quick-responses" id="quickResponsesContainer">
+                    <button class="quick-btn" onclick="sendQuickMessage('Làm sao phát âm từ này?')">🔊 Phát âm</button>
+                    <button class="quick-btn" onclick="sendQuickMessage('Cho ví dụ sử dụng từ này')">📖 Ví dụ</button>
+                    <button class="quick-btn" onclick="sendQuickMessage('Từ này là gì?')">❓ Định nghĩa</button>
+                    <button class="quick-btn" onclick="sendQuickMessage('Hướng dẫn bài học')">📚 Hướng dẫn</button>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🤖</div>
+                        <p>Xin chào! Tôi là ChatBot AI của Duokid.</p>
+                        <p>Hãy đặt câu hỏi về tiếng Anh hoặc từ vựng. Tôi sẵn sàng giúp bạn!</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <textarea id="chatInput" placeholder="Nhập câu hỏi của em..." rows="2"></textarea>
+                    <button class="btn-send" id="sendBtn" onclick="sendMessage()">Gửi</button>
+                </div>
+            </div>
+
+            <!-- Vocabulary Lookup Panel -->
+            <div class="chat-panel">
+                <h3>📖 Giải Thích Từ Vựng</h3>
+
+                <div class="quick-tips">
+                    <h4>💡 Mẹo</h4>
+                    <p>Nhập một từ tiếng Anh bất kỳ để nhận:</p>
+                    <p>• Định nghĩa chi tiết</p>
+                    <p>• Phát âm và ví dụ sử dụng</p>
+                    <p>• Từ đồng nghĩa</p>
+                </div>
+
+                <div class="vocab-lookup">
+                    <input type="text" id="vocabInput" placeholder="Nhập từ tiếng Anh..." onkeypress="handleVocabKeypress(event)">
+                    <button class="btn-lookup" onclick="lookupVocabulary()">🔍 Tìm</button>
+                </div>
+
+                <div id="vocabResult" class="vocab-result" style="display: none;">
+                    <h4 id="vocabWord">Word</h4>
+                    <p><strong>Phiên âm:</strong> <span id="vocabPhonetic">/word/</span></p>
+                    <p><strong>Nghĩa tiếng Việt:</strong> <span id="vocabMeaning">Meaning</span></p>
+                    <p><strong>Ví dụ:</strong> <em id="vocabExample">Example sentence</em></p>
+                    <button class="btn-sound" onclick="speakVocab()">🔊 Nghe Phát Âm</button>
+                    <button class="btn-sound" onclick="addToMyWords()" style="background: #8B5CF6; margin-left: 8px;">⭐ Thêm vào Sổ Tay</button>
+                </div>
+
+                <div id="emptyVocab" class="empty-state" style="margin-top: 30px;">
+                    <div class="empty-state-icon">📚</div>
+                    <p>Tìm kiếm một từ để xem chi tiết</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    let currentVocabWord = null;
+    let chatMessages = [];
+
+    // Send message to chatbot
+    async function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        // Add user message to chat
+        addChatMessage(message, 'user');
+        input.value = '';
+
+        // Show loading indicator
+        addChatMessage('', 'loading');
+
+        try {
+            // Call Python service
+            const response = await fetch('http://localhost:5000/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    context: 'learning'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Không thể kết nối tới AI service');
+            }
+
+            const data = await response.json();
+            
+            // Remove loading message
+            const messages = document.querySelectorAll('#chatMessages .message.loading');
+            if (messages.length > 0) {
+                messages[messages.length - 1].remove();
+            }
+
+            // Add bot response
+            addChatMessage(data.reply || 'Xin lỗi, tôi không hiểu câu hỏi của bạn.', 'bot');
+        } catch (error) {
+            console.error('Error:', error);
+            
+            // Remove loading message
+            const messages = document.querySelectorAll('#chatMessages .message.loading');
+            if (messages.length > 0) {
+                messages[messages.length - 1].remove();
+            }
+
+            // Fallback response
+            addChatMessage('Xin lỗi, AI service hiện không available. Vui lòng kiểm tra Python server có chạy không (http://localhost:5000)', 'bot');
+        }
+    }
+
+    function sendQuickMessage(message) {
+        document.getElementById('chatInput').value = message;
+        sendMessage();
+    }
+
+    function addChatMessage(message, sender) {
+        const container = document.getElementById('chatMessages');
+        
+        // Remove empty state
+        const emptyState = container.querySelector('.empty-state');
+        if (emptyState) {
+            emptyState.remove();
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}`;
+
+        if (sender === 'loading') {
+            messageDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-bubble">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+        } else {
+            const avatar = sender === 'user' ? '👤' : '🤖';
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-bubble">${escapeHtml(message)}</div>
+            `;
+        }
+
+        container.appendChild(messageDiv);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // Lookup vocabulary
+    async function lookupVocabulary() {
+        const word = document.getElementById('vocabInput').value.trim();
+        
+        if (!word) {
+            alert('Vui lòng nhập một từ!');
+            return;
+        }
+
+        currentVocabWord = word;
+
+        try {
+            // Call Python service
+            const response = await fetch('http://localhost:5000/api/vocabulary', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    word: word
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Không thể lấy thông tin từ');
+            }
+
+            const data = await response.json();
+
+            // Display result
+            document.getElementById('vocabWord').textContent = data.word || word;
+            document.getElementById('vocabPhonetic').textContent = data.phonetic || '/---/';
+            document.getElementById('vocabMeaning').textContent = data.meaning || 'Xin lỗi, không tìm thấy định nghĩa';
+            document.getElementById('vocabExample').textContent = data.example || 'Không có ví dụ';
+
+            document.getElementById('vocabResult').style.display = 'block';
+            document.getElementById('emptyVocab').style.display = 'none';
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Không thể tìm từ này. Vui lòng kiểm tra Python server (http://localhost:5000)');
+        }
+    }
+
+    function handleVocabKeypress(event) {
+        if (event.key === 'Enter') {
+            lookupVocabulary();
+        }
+    }
+
+    async function speakVocab() {
+        if (!currentVocabWord) return;
+
+        try {
+            const response = await fetch(`/tts?text=${encodeURIComponent(currentVocabWord)}`);
+            const data = await response.json();
+
+            if (data.audioUrl) {
+                const audio = new Audio(data.audioUrl);
+                audio.play();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Không thể phát âm từ này');
+        }
+    }
+
+    function addToMyWords() {
+        if (!currentVocabWord) return;
+
+        const meaning = document.getElementById('vocabMeaning').textContent;
+        const phonetic = document.getElementById('vocabPhonetic').textContent;
+
+        // Redirect to add to mywords
+        const params = new URLSearchParams({
+            englishWord: currentVocabWord,
+            vietnameseMeaning: meaning,
+            ipa: phonetic
+        });
+
+        window.location.href = `/mywords?${params.toString()}`;
+    }
+
+    // Chat input enter key
+    document.getElementById('chatInput')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Request microphone permission for voice input (optional enhancement)
+    function requestMicrophonePermission() {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    stream.getTracks().forEach(track => track.stop());
+                })
+                .catch(err => console.log('Microphone permission denied'));
+        }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('ChatBot initialized');
+    });
+</script>
+</body>
+</html>
