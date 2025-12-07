@@ -44,11 +44,11 @@ body {
     align-items: center;
     gap: 8px;
     flex: 1;
-    overflow-x: auto;
-    overflow-y: hidden;
+    /* overflow-x: auto;  <-- XÓA DÒNG NÀY (gây lỗi cuộn) */
+    /* overflow-y: hidden; <-- XÓA DÒNG NÀY (thủ phạm cắt dropdown) */
+    overflow: visible;    /* THÊM DÒNG NÀY: Cho phép hiển thị tràn ra ngoài */
+    flex-wrap: wrap;      /* THÊM DÒNG NÀY: Tự xuống dòng nếu màn hình nhỏ */
     padding: 4px 0;
-    scrollbar-width: thin;
-    scrollbar-color: #E5E7EB transparent;
 }
 
 .top-nav nav::-webkit-scrollbar {
