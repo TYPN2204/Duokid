@@ -1,6 +1,6 @@
 #FileLock
-#Fri Nov 21 15:47:23 ICT 2025
-hostName=DESKTOP-U0UQMVG
-id=19aa598bf71e96054d19a58c543e5417e79746dd120
+#Sun Dec 07 04:56:47 UTC 2025
+server=localhost\:37509
+hostName=localhost
 method=file
-server=192.168.174.1\:57992
+id=19af72b630b1e315857e12f3f980b9df98d26bf0a7a
