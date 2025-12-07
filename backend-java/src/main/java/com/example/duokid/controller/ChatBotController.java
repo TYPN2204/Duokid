@@ -27,6 +27,15 @@ public class ChatBotController {
         this.vocabularyService = vocabularyService;
     }
 
+    // Small in-memory fallback for very common words (used if DB search misses)
+    private static final java.util.Map<String, String[]> FALLBACK_VOCAB = new java.util.HashMap<>() {{
+        put("father", new String[]{"/ˈfɑː.ðər/", "Cha, bố", "My father works at the bank."});
+        put("mother", new String[]{"/ˈmʌð.ər/", "Mẹ", "My mother cooks delicious food."});
+        put("pen", new String[]{"/pen/", "Bút", "I write with a blue pen."});
+        put("pencil", new String[]{"/ˈpen.səl/", "Bút chì", "She draws with a pencil."});
+        put("teacher", new String[]{"/ˈtiː.tʃər/", "Giáo viên", "The teacher explains the lesson."});
+    }};
+
     /**
      * Display ChatBot page
      */
@@ -48,15 +57,44 @@ public class ChatBotController {
     @ResponseBody
     public ResponseEntity<?> chat(@RequestBody JsonNode request) {
         try {
-            String response = restTemplate.postForObject(
-                COLAB_SERVICE_URL + "/api/chat",
-                request,
-                String.class
-            );
-            return ResponseEntity.ok(response);
+            // Try Colab first
+            String response = null;
+            try {
+                response = restTemplate.postForObject(
+                    COLAB_SERVICE_URL + "/api/chat",
+                    request,
+                    String.class
+                );
+            } catch (Exception ex) {
+                response = null;
+            }
+
+            // If Colab returned nothing or a trivial reply like "English", fallback to local Python service
+            if (response == null || response.trim().isEmpty() || response.contains("\"reply\":\"English\"") || response.trim().equalsIgnoreCase("English")) {
+                try {
+                    String local = restTemplate.postForObject(
+                        "http://localhost:5000/api/chat",
+                        request,
+                        String.class
+                    );
+                    if (local != null && !local.trim().isEmpty()) {
+                        return ResponseEntity.ok(local);
+                    }
+                } catch (Exception ex) {
+                    // ignore and fall through
+                }
+            }
+
+            if (response != null) {
+                return ResponseEntity.ok(response);
+            }
+
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("{\"error\":\"Chat service unavailable\"}");
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body("{\"error\":\"Colab service unavailable\"}");
+                .body("{\"error\":\"Chat service error\"}");
         }
     }
 
@@ -72,13 +110,24 @@ public class ChatBotController {
             if (word == null || word.trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("{\"error\":\"Word is required\"}");
             }
+            // Check in-memory fallback first
+            String key = word.trim().toLowerCase();
+            if (FALLBACK_VOCAB.containsKey(key)) {
+                String[] d = FALLBACK_VOCAB.get(key);
+                String jsonF = String.format(
+                    "{\"word\":\"%s\",\"phonetic\":\"%s\",\"meaning\":\"%s\",\"example\":\"%s\"}",
+                    key, d[0], d[1], d[2]
+                );
+                return ResponseEntity.ok(jsonF);
+            }
+
             List<Vocabulary> results = vocabularyService.searchVocabularies(word.trim());
             if (results != null && !results.isEmpty()) {
                 Vocabulary v = results.get(0);
                 // Build a simple JSON response matching Python format
                 String json = String.format(
                     "{\"word\":\"%s\",\"phonetic\":\"%s\",\"meaning\":\"%s\",\"example\":\"%s\"}",
-                    v.getEnglishWord(), v.getPhonetic() == null ? "" : v.getPhonetic(),
+                    v.getEnglishWord(), v.getIpaAmerican() == null ? "" : v.getIpaAmerican(),
                     v.getVietnameseMeaning() == null ? "" : v.getVietnameseMeaning(),
                     v.getExampleSentence() == null ? "" : v.getExampleSentence()
                 );
