@@ -20,8 +20,7 @@ import java.util.List;
 public class ChatBotController {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    // Use Colab public endpoint for ChatBot
-    private final String COLAB_SERVICE_URL = "https://elongative-pyrographic-kendrick.ngrok-free.dev";
+    private final String PYTHON_SERVICE_URL = "http://localhost:5000";
 
     private final VocabularyService vocabularyService;
     private final LessonService lessonService;
@@ -67,36 +66,17 @@ public class ChatBotController {
     @ResponseBody
     public ResponseEntity<?> chat(@RequestBody JsonNode request) {
         try {
-            // Try Colab first
-            String response = null;
             try {
-                response = restTemplate.postForObject(
-                    COLAB_SERVICE_URL + "/api/chat",
+                String local = restTemplate.postForObject(
+                    PYTHON_SERVICE_URL + "/api/chat",
                     request,
                     String.class
                 );
-            } catch (Exception ex) {
-                response = null;
-            }
-
-            // If Colab returned nothing or a trivial reply like "English", fallback to local Python service
-            if (response == null || response.trim().isEmpty() || response.contains("\"reply\":\"English\"") || response.trim().equalsIgnoreCase("English")) {
-                try {
-                    String local = restTemplate.postForObject(
-                        "http://localhost:5000/api/chat",
-                        request,
-                        String.class
-                    );
-                    if (local != null && !local.trim().isEmpty()) {
-                        return ResponseEntity.ok(local);
-                    }
-                } catch (Exception ex) {
-                    // ignore and fall through
+                if (local != null && !local.trim().isEmpty()) {
+                    return ResponseEntity.ok(local);
                 }
-            }
-
-            if (response != null) {
-                return ResponseEntity.ok(response);
+            } catch (Exception ex) {
+                // ignore and fall through
             }
 
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -115,7 +95,21 @@ public class ChatBotController {
     @ResponseBody
     public ResponseEntity<?> vocabulary(@RequestBody JsonNode request) {
         try {
-            // Use internal VocabularyService to look up words (more complete DB)
+            // Try Python dictionary API first for broad coverage
+            try {
+                String fromPython = restTemplate.postForObject(
+                    PYTHON_SERVICE_URL + "/api/vocabulary",
+                    request,
+                    String.class
+                );
+                if (fromPython != null && !fromPython.trim().isEmpty()) {
+                    return ResponseEntity.ok(fromPython);
+                }
+            } catch (Exception ex) {
+                // ignore and fall through to local fallback
+            }
+
+            // Local fallback
             String word = request.has("word") ? request.get("word").asText("") : "";
             if (word == null || word.trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("{\"error\":\"Word is required\"}");
@@ -132,8 +126,8 @@ public class ChatBotController {
                 return ResponseEntity.ok(jsonF);
             }
 
-                List<Vocabulary> results = vocabularyService.searchVocabularies(word.trim());
-                if (results != null && !results.isEmpty()) {
+            List<Vocabulary> results = vocabularyService.searchVocabularies(word.trim());
+            if (results != null && !results.isEmpty()) {
                 // Prefer exact match on english word or whole-word matches in fields
                 String kw = word.trim();
                 java.util.regex.Pattern whole = java.util.regex.Pattern.compile("\\b" + java.util.regex.Pattern.quote(kw) + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE);
@@ -212,6 +206,20 @@ public class ChatBotController {
                             word, meaning.replaceAll("\"","'"), lesson.getTitle().replaceAll("\"","'")
                         );
                         return ResponseEntity.ok(jsonLesson);
+                    } else {
+                        // try a looser whole-word match and return nearby snippet
+                        java.util.regex.Pattern whole = java.util.regex.Pattern.compile("\\b" + java.util.regex.Pattern.quote(word) + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE);
+                        java.util.regex.Matcher mm = whole.matcher(html);
+                        if (mm.find()) {
+                            int mstart = Math.max(0, mm.start() - 40);
+                            int mend = Math.min(html.length(), mm.end() + 40);
+                            String snippet = html.substring(mstart, mend).replaceAll("<.*?>", "").trim();
+                            String jsonLesson2 = String.format(
+                                "{\"word\":\"%s\",\"phonetic\":\"/word/\",\"meaning\":\"Found in lesson: %s\",\"example\":\"%s\"}",
+                                word, lesson.getTitle().replaceAll("\"","'"), snippet.replaceAll("\"","'")
+                            );
+                            return ResponseEntity.ok(jsonLesson2);
+                        }
                     }
                 }
             } catch (Exception ex) {

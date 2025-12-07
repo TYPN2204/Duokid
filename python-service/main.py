@@ -9,10 +9,10 @@ import random
 import re
 import requests
 
-# Hugging Face API Configuration - Load from environment variable
+# Hugging Face API Configuration - Load from environment variable (free tier, but token recommended)
 HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
-# Using the new serverless inference API endpoint
-HF_API_URL = "https://router.huggingface.co/models/distilgpt2"
+HF_MODEL = "mistralai/Mistral-7B-Instruct-v0.2"  # free & smart
+HF_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL}"
 
 app = FastAPI()
 
@@ -29,8 +29,8 @@ TTS_FOLDER = "tts_audio"
 os.makedirs(TTS_FOLDER, exist_ok=True)
 
 print("✅ Hugging Face API configured successfully!")
-print(f"🤖 Using model: distilgpt2 (lightweight text generation)")
-print(f"🔌 API Endpoint: https://api-inference.huggingface.co")
+print(f"🤖 Using model: {HF_MODEL}")
+print(f"🔌 API Endpoint: {HF_API_URL}")
 
 
 
@@ -300,60 +300,70 @@ def chat(req: ChatRequest):
     if not message:
         return ChatResponse(reply="Please type a message to chat with me!")
     
+    prompt = (
+        "You are a helpful, concise English tutor for kids."
+        " Always reply in simple English (1-3 sentences)."
+        " If asked for translation, include a short Vietnamese translation."
+        f"\nUser: {message}\nAssistant:"
+    )
+
+    # Nếu không có token, trả lời ngắn gọn offline để không bị 401
+    if not HF_API_TOKEN:
+        offline_templates = [
+            "I'm here and ready to chat!",
+            "Great question! Let's practice more.",
+            "Keep it up! What else would you like to learn?",
+        ]
+        return ChatResponse(reply=random.choice(offline_templates))
+
     try:
-        # Call Hugging Face Inference API
-        headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
-        
+        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {HF_API_TOKEN}"}
+
         payload = {
-            "inputs": message[:80],
+            "inputs": prompt,
             "parameters": {
-                "max_new_tokens": 60,
-                "temperature": 0.7
-            }
+                "max_new_tokens": 120,
+                "temperature": 0.7,
+                "top_p": 0.9,
+            },
         }
-        
-        response = requests.post(
-            "https://router.huggingface.co/models/distilgpt2",
-            headers=headers,
-            json=payload,
-            timeout=15
-        )
-        
-        # Handle different response codes
-        if response.status_code == 200:
-            try:
-                result = response.json()
-            except:
-                return ChatResponse(reply="That's interesting! Can you tell me more?")
-            
-            if isinstance(result, list) and len(result) > 0:
-                generated = result[0].get("generated_text", "")
-                
-                # Extract only the generated part
-                if generated.startswith(message):
-                    bot_reply = generated[len(message):].strip()
-                else:
-                    bot_reply = generated.strip()
-                
-                # Clean response
-                bot_reply = bot_reply.replace("\n", " ").strip()
-                if not bot_reply:
-                    bot_reply = "Great topic! Let's continue."
-                if len(bot_reply) > 150:
-                    bot_reply = bot_reply[:150].rsplit(' ', 1)[0] + "..."
-                
-                return ChatResponse(reply=bot_reply)
-        
-        elif response.status_code == 503:
-            return ChatResponse(reply="🤖 Model is loading... Try again in a moment!")
-        
-        else:
-            return ChatResponse(reply="Let me think about that...")
-    
+
+        response = requests.post(HF_API_URL, headers=headers, json=payload, timeout=20)
+
+        if response.status_code == 503:
+            return ChatResponse(reply="🤖 Model đang khởi động trên HuggingFace, thử lại sau vài giây nhé!")
+
+        if response.status_code == 401:
+            return ChatResponse(reply="Cần thiết lập biến môi trường HF_API_TOKEN (miễn phí trên HuggingFace) để dùng AI thông minh.")
+
+        if response.status_code != 200:
+            return ChatResponse(reply="Hiện đang gặp sự cố với AI. Thử lại sau ít phút nhé!")
+
+        data = response.json()
+        generated = ""
+        if isinstance(data, list) and data:
+            generated = data[0].get("generated_text", "")
+        elif isinstance(data, dict):
+            generated = data.get("generated_text", "") or data.get("text", "")
+
+        # Tách phần trả lời sau tiền tố "Assistant:" nếu có
+        if "Assistant:" in generated:
+            generated = generated.split("Assistant:", 1)[-1]
+
+        bot_reply = (generated or "Let me think about that...").strip()
+        bot_reply = bot_reply.replace("\n", " ")
+        if len(bot_reply) > 200:
+            bot_reply = bot_reply[:200].rsplit(" ", 1)[0] + "..."
+
+        if not bot_reply:
+            bot_reply = "Great topic! Let's keep talking."
+
+        return ChatResponse(reply=bot_reply)
+
     except requests.exceptions.Timeout:
-        return ChatResponse(reply="Request timed out. Try a shorter message!")
-    except:
-        return ChatResponse(reply="That's a great question! Keep learning!")
+        return ChatResponse(reply="Kết nối tới HuggingFace bị timeout. Thử lại sau nhé!")
+    except Exception:
+        return ChatResponse(reply="Tôi gặp trục trặc nhỏ. Hãy hỏi lại sau một lát nhé!")
 
 
 
@@ -364,22 +374,80 @@ def lookup_vocabulary(req: VocabularyRequest):
     """
     word = req.word.lower().strip()
     
-    # Check if word exists in library
+    # Check local library first
     if word in VOCABULARY_LIBRARY:
         vocab = VOCABULARY_LIBRARY[word]
         return VocabularyResponse(
             word=word,
             phonetic=vocab["phonetic"],
             meaning=vocab["meaning"],
-            example=vocab["example"]
+            example=vocab["example"],
         )
-    
-    # If not found, return a generic response
+
+    # Try free dictionary API for broader coverage
+    try:
+        resp = requests.get(
+            f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}", timeout=8
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            if isinstance(data, list) and data:
+                entry = data[0]
+                phonetics = entry.get("phonetics", [])
+                meanings = entry.get("meanings", [])
+
+                phon = ""
+                for ph in phonetics:
+                    if ph.get("text"):
+                        phon = ph.get("text")
+                        break
+
+                # pick a friendly definition (avoid gym exercise noise)
+                def pick_def():
+                    if not meanings:
+                        return None, None
+                    # first pass: avoid definitions mentioning exercise/barbell/waist
+                    bad_keywords = ["exercise", "barbell", "waist"]
+                    prefer_pos = {"interjection", "exclamation", "phrase", "idiom"}
+                    for m in meanings:
+                        defs = m.get("definitions", [])
+                        pos = (m.get("partOfSpeech") or "").lower()
+                        for d in defs:
+                            definition = d.get("definition", "")
+                            if not definition:
+                                continue
+                            low = definition.lower()
+                            if any(bk in low for bk in bad_keywords):
+                                continue
+                            if pos in prefer_pos or "greet" in low or "good morning" in low:
+                                return definition, d.get("example", "") or ""
+                    # second pass: first available definition
+                    for m in meanings:
+                        defs = m.get("definitions", [])
+                        if defs:
+                            d = defs[0]
+                            return d.get("definition", ""), d.get("example", "") or ""
+                    return None, None
+
+                meaning_text, example_text = pick_def()
+
+                if meaning_text:
+                    return VocabularyResponse(
+                        word=word,
+                        phonetic=phon or "/word/",
+                        meaning=meaning_text,
+                        example=example_text or f"Example: {word}",
+                    )
+    except requests.exceptions.Timeout:
+        pass
+    except Exception:
+        pass
+
     return VocabularyResponse(
         word=word,
         phonetic="/word/",
-        meaning=f"Sorry, I don't have this word in my vocabulary database yet. Try another word!",
-        example="Keep learning new words!"
+        meaning="Xin lỗi, từ này chưa có trong từ điển online lúc này. Thử lại sau nhé!",
+        example="Keep learning new words!",
     )
 
 
