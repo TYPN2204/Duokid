@@ -277,3 +277,6 @@ java.lang.IllegalArgumentException: Invalid boolean value '/waɪp ɔːf/'
 	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
 
 2025-12-07T13:24:49.663Z ERROR 100453 --- [nio-8080-exec-9] s.e.ErrorMvcAutoConfiguration$StaticView : Cannot render error page for request [/vocabulary] as the response has already been committed. As a result, the response may have the wrong status code.
+2025-12-07T13:48:15.200Z  INFO 100453 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-12-07T13:48:15.202Z  INFO 100453 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-12-07T13:48:15.203Z  INFO 100453 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

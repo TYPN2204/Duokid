@@ -12,8 +12,10 @@ from functools import lru_cache
 
 # Hugging Face API Configuration - Load from environment variable (free tier, but token recommended)
 HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
-HF_MODEL = "mistralai/Mistral-7B-Instruct-v0.2"  # free & smart
-HF_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL}"
+# Prefer a stronger free instruct model on HF
+HF_MODEL = "meta-llama/Meta-Llama-3-8B-Instruct"
+# New HF router endpoint (OpenAI-compatible)
+HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
 
 app = FastAPI()
 
@@ -324,9 +326,10 @@ def chat(req: ChatRequest):
         return ChatResponse(reply="Please type a message to chat with me!")
     
     prompt = (
-        "You are a helpful, concise English tutor for kids."
-        " Always reply in simple English (1-3 sentences)."
-        " If asked for translation, include a short Vietnamese translation."
+        "Bạn là trợ lý dạy tiếng Anh cho thiếu nhi, trả lời NGẮN gọn bằng tiếng Việt (ưu tiên)."
+        " Nếu cần ví dụ tiếng Anh thì chỉ 1 câu ngắn kèm dịch Việt."
+        " Nếu người dùng hỏi định nghĩa, hãy giải thích ngắn + dịch nghĩa Việt."
+        " Nếu người dùng hỏi phát âm, hãy nêu IPA và hướng dẫn khẩu hình ngắn."
         f"\nUser: {message}\nAssistant:"
     )
 
@@ -356,52 +359,85 @@ def chat(req: ChatRequest):
             return None
         return None
 
+    def maybe_pronounce() -> str | None:
+        intent_words = ["phat am", "phát âm", "pronounce", "pronunciation", "ipa"]
+        if not any(w in lower_msg for w in intent_words):
+            return None
+        target = None
+        for sep in ["phát âm", "phat am", "pronounce", "pronunciation", "ipa"]:
+            if sep in lower_msg:
+                target = lower_msg.split(sep, 1)[-1].strip(" ?!.,\"'")
+                break
+        if not target:
+            parts = lower_msg.split()
+            target = parts[-1].strip("\"'") if parts else None
+        if not target:
+            return None
+        try:
+            vreq = VocabularyRequest(word=target)
+            vresp = lookup_vocabulary(vreq)
+            ipa = vresp.phonetic or "(chưa rõ IPA)"
+            meaning_vi = vresp.meaning or ""
+            return f"Phát âm '{target}': {ipa}. Nghĩa: {meaning_vi}"
+        except Exception:
+            return None
+
+    pron = maybe_pronounce()
+    if pron:
+        return ChatResponse(reply=pron)
+
     quick_def = maybe_define_from_vocab()
     if quick_def:
         return ChatResponse(reply=quick_def)
 
-    # Nếu không có token, trả lời ngắn gọn offline để không bị 401
-    if not HF_API_TOKEN:
-        offline_templates = [
-            "I'm here and ready to chat!",
-            "Great question! Let's practice more.",
-            "Keep it up! What else would you like to learn?",
-        ]
-        return ChatResponse(reply=random.choice(offline_templates))
-
     try:
-        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {HF_API_TOKEN}"}
+        headers = {"Content-Type": "application/json"}
+        if HF_API_TOKEN:
+            headers["Authorization"] = f"Bearer {HF_API_TOKEN}"
 
         payload = {
-            "inputs": prompt,
-            "parameters": {
-                "max_new_tokens": 120,
-                "temperature": 0.7,
-                "top_p": 0.9,
-            },
+            "model": HF_MODEL,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "Bạn là trợ lý dạy tiếng Anh cho thiếu nhi. Luôn trả lời NGẮN gọn (2-3 câu tối đa) bằng tiếng Việt, rõ ràng và vui vẻ. "
+                        "Khi cần ví dụ tiếng Anh, chỉ đưa 1 câu ngắn và kèm dịch Việt. "
+                        "Nếu hỏi định nghĩa: trả lời 1-2 câu tiếng Việt + 1 ví dụ ngắn (Anh + dịch). "
+                        "Nếu hỏi phát âm: đưa IPA, nhấn trọng âm và gợi ý khẩu hình 1 câu. "
+                        "Nếu hỏi ví dụ: cho 2 câu tiếng Anh khác nhau, mỗi câu kèm dịch Việt. "
+                        "Nếu hỏi hướng dẫn học: đưa 3 bước cụ thể, ngắn gọn dễ làm theo. "
+                        "Nếu câu hỏi về ngữ pháp: giải thích cách dùng rồi cho 1-2 ví dụ. "
+                        "Nếu câu hỏi chung chung hoặc mơ hồ, hãy hỏi lại để hiểu rõ hơn."
+                    ),
+                },
+                {"role": "user", "content": message}
+            ],
+            "max_tokens": 200,
+            "temperature": 0.75,
+            "top_p": 0.9,
         }
 
-        response = requests.post(HF_API_URL, headers=headers, json=payload, timeout=20)
+        response = requests.post(HF_API_URL, headers=headers, json=payload, timeout=25)
 
         if response.status_code == 503:
+            print(f"⚠️ HF Model loading: {response.text[:200]}")
             return ChatResponse(reply="🤖 Model đang khởi động trên HuggingFace, thử lại sau vài giây nhé!")
 
         if response.status_code == 401:
+            print(f"❌ HF Auth failed: {response.text[:200]}")
             return ChatResponse(reply="Cần thiết lập biến môi trường HF_API_TOKEN (miễn phí trên HuggingFace) để dùng AI thông minh.")
 
         if response.status_code != 200:
+            print(f"⚠️ HF Error {response.status_code}: {response.text[:300]}")
             return ChatResponse(reply="Hiện đang gặp sự cố với AI. Thử lại sau ít phút nhé!")
 
         data = response.json()
         generated = ""
-        if isinstance(data, list) and data:
-            generated = data[0].get("generated_text", "")
-        elif isinstance(data, dict):
-            generated = data.get("generated_text", "") or data.get("text", "")
-
-        # Tách phần trả lời sau tiền tố "Assistant:" nếu có
-        if "Assistant:" in generated:
-            generated = generated.split("Assistant:", 1)[-1]
+        if isinstance(data, dict):
+            choices = data.get("choices") or []
+            if choices:
+                generated = choices[0].get("message", {}).get("content", "")
 
         bot_reply = (generated or "Let me think about that...").strip()
         bot_reply = bot_reply.replace("\n", " ")
@@ -414,9 +450,17 @@ def chat(req: ChatRequest):
         return ChatResponse(reply=bot_reply)
 
     except requests.exceptions.Timeout:
-        return ChatResponse(reply="Kết nối tới HuggingFace bị timeout. Thử lại sau nhé!")
+        pass
     except Exception:
-        return ChatResponse(reply="Tôi gặp trục trặc nhỏ. Hãy hỏi lại sau một lát nhé!")
+        pass
+
+    # Offline fallback
+    offline_templates = [
+        "I'm here and ready to chat!",
+        "Great question! Let's practice more.",
+        "Keep it up! What else would you like to learn?",
+    ]
+    return ChatResponse(reply=random.choice(offline_templates))
 
 
 

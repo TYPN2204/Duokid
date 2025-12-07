@@ -409,10 +409,10 @@
                 <h3>💬 Chat với AI</h3>
                 
                 <div class="quick-responses" id="quickResponsesContainer">
-                    <button class="quick-btn" onclick="sendQuickMessage('Làm sao phát âm từ này?')">🔊 Phát âm</button>
-                    <button class="quick-btn" onclick="sendQuickMessage('Cho ví dụ sử dụng từ này')">📖 Ví dụ</button>
-                    <button class="quick-btn" onclick="sendQuickMessage('Từ này là gì?')">❓ Định nghĩa</button>
-                    <button class="quick-btn" onclick="sendQuickMessage('Hướng dẫn bài học')">📚 Hướng dẫn</button>
+                    <button class="quick-btn" onclick="sendPresetAnswer('pronunciation')">🔊 Phát âm 'describe'</button>
+                    <button class="quick-btn" onclick="sendPresetAnswer('example')">📖 Ví dụ 'prepare'</button>
+                    <button class="quick-btn" onclick="sendPresetAnswer('definition')">❓ Định nghĩa 'explore'</button>
+                    <button class="quick-btn" onclick="sendPresetAnswer('guide')">📚 Hướng dẫn 'remember'</button>
                 </div>
 
                 <div class="chat-messages" id="chatMessages">
@@ -521,6 +521,44 @@
             // Fallback response
             addChatMessage('Xin lỗi, AI service hiện không available. Vui lòng thử lại sau.', 'bot');
         }
+    }
+
+    function sendPresetAnswer(answerType) {
+        const presetAnswers = {
+            pronunciation: {
+                userMsg: "Phát âm 'describe'",
+                botReply: "Phát âm 'describe': /dɪˈskraɪb/. Trọng âm vào âm tiết thứ 2. Khẩu hình: di-SKRIBE. Nghĩa: mô tả, diễn tả. Ví dụ: Can you describe the picture? (Bạn có thể mô tả bức tranh không?)"
+            },
+            example: {
+                userMsg: "Ví dụ 'prepare'",
+                botReply: "2 ví dụ với 'prepare':\n1. \"I am preparing for the exam.\" - Tôi đang chuẩn bị cho kỳ thi.\n2. \"They prepared a special meal.\" - Họ chuẩn bị một bữa ăn đặc biệt.\n\nNghĩa: chuẩn bị, sắp xếp trước."
+            },
+            definition: {
+                userMsg: "Định nghĩa 'explore'",
+                botReply: "Định nghĩa 'explore': Khám phá, tìm hiểu một cách kỹ lưỡng. Là động từ (verb).\nVí dụ: \"The children explored the forest.\" - Những đứa trẻ khám phá cánh rừng."
+            },
+            guide: {
+                userMsg: "Hướng dẫn học 'remember'",
+                botReply: "3 bước học 'remember':\n1. **Phát âm**: /rɪˈmembər/ (ri-MEM-ber). Nghĩa: nhớ, ghi nhớ.\n2. **Ví dụ**: \"I remember your name\" (Tôi nhớ tên của bạn).\n3. **Thực hành**: Viết 3 câu sử dụng 'remember' trong sinh hoạt hàng ngày."
+            }
+        };
+
+        const preset = presetAnswers[answerType];
+        if (!preset) return;
+
+        const container = document.getElementById('chatMessages');
+        
+        // Remove empty state
+        const emptyState = container.querySelector('.empty-state');
+        if (emptyState) {
+            emptyState.remove();
+        }
+
+        // Add user message
+        addChatMessage(preset.userMsg, 'user');
+        
+        // Add bot response immediately (no API call)
+        addChatMessage(preset.botReply, 'bot');
     }
 
     function sendQuickMessage(message) {
