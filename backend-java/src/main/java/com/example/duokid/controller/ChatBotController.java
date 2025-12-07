@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.example.duokid.service.VocabularyService;
+import com.example.duokid.service.LessonService;
+import com.example.duokid.model.Lesson;
 import com.example.duokid.model.Vocabulary;
 import java.util.List;
 
@@ -22,9 +24,11 @@ public class ChatBotController {
     private final String COLAB_SERVICE_URL = "https://elongative-pyrographic-kendrick.ngrok-free.dev";
 
     private final VocabularyService vocabularyService;
+    private final LessonService lessonService;
 
-    public ChatBotController(VocabularyService vocabularyService) {
+    public ChatBotController(VocabularyService vocabularyService, LessonService lessonService) {
         this.vocabularyService = vocabularyService;
+        this.lessonService = lessonService;
     }
 
     // Small in-memory fallback for very common words (used if DB search misses)
@@ -34,6 +38,12 @@ public class ChatBotController {
         put("pen", new String[]{"/pen/", "Bút", "I write with a blue pen."});
         put("pencil", new String[]{"/ˈpen.səl/", "Bút chì", "She draws with a pencil."});
         put("teacher", new String[]{"/ˈtiː.tʃər/", "Giáo viên", "The teacher explains the lesson."});
+        put("breakfast", new String[]{"/ˈbrek.fəst/", "Bữa sáng", "I eat breakfast every morning."});
+        put("school", new String[]{"/skuːl/", "Trường học", "I go to school every day."});
+        put("book", new String[]{"/bʊk/", "Cuốn sách", "This book is very interesting."});
+        put("apple", new String[]{"/ˈæp.əl/", "Quả táo", "I eat an apple every day."});
+        put("cat", new String[]{"/kæt/", "Con mèo", "My cat is very cute."});
+        put("dog", new String[]{"/dɔɡ/", "Con chó", "The dog runs in the park."});
     }};
 
     /**
@@ -113,6 +123,7 @@ public class ChatBotController {
             // Check in-memory fallback first
             String key = word.trim().toLowerCase();
             if (FALLBACK_VOCAB.containsKey(key)) {
+                System.out.println("VOCAB FALLBACK HIT: " + key);
                 String[] d = FALLBACK_VOCAB.get(key);
                 String jsonF = String.format(
                     "{\"word\":\"%s\",\"phonetic\":\"%s\",\"meaning\":\"%s\",\"example\":\"%s\"}",
@@ -123,7 +134,11 @@ public class ChatBotController {
 
             List<Vocabulary> results = vocabularyService.searchVocabularies(word.trim());
             if (results != null && !results.isEmpty()) {
-                Vocabulary v = results.get(0);
+                // Prefer exact match on english word
+                Vocabulary v = results.stream()
+                        .filter(x -> x.getEnglishWord() != null && x.getEnglishWord().equalsIgnoreCase(word.trim()))
+                        .findFirst()
+                        .orElse(results.get(0));
                 // Build a simple JSON response matching Python format
                 String json = String.format(
                     "{\"word\":\"%s\",\"phonetic\":\"%s\",\"meaning\":\"%s\",\"example\":\"%s\"}",
@@ -134,7 +149,29 @@ public class ChatBotController {
                 return ResponseEntity.ok(json);
             }
 
-            // Not found
+            // Not found in DB/fallback — try searching lesson contentHtml
+            System.out.println("VOCAB NOT FOUND IN DB: " + word);
+            try {
+                java.util.List<Lesson> lessons = lessonService.findAll();
+                java.util.regex.Pattern p = java.util.regex.Pattern.compile("<b>\\s*" + java.util.regex.Pattern.quote(word) + "\\s*</b>\\s*[–-]\\s*([^<]+)", java.util.regex.Pattern.CASE_INSENSITIVE);
+                for (Lesson lesson : lessons) {
+                    String html = lesson.getContentHtml();
+                    if (html == null) continue;
+                    java.util.regex.Matcher m = p.matcher(html);
+                    if (m.find()) {
+                        String meaning = m.group(1).trim();
+                        String jsonLesson = String.format(
+                            "{\"word\":\"%s\",\"phonetic\":\"/word/\",\"meaning\":\"%s\",\"example\":\"From lesson: %s\"}",
+                            word, meaning.replaceAll("\"","'"), lesson.getTitle().replaceAll("\"","'")
+                        );
+                        return ResponseEntity.ok(jsonLesson);
+                    }
+                }
+            } catch (Exception ex) {
+                // ignore and return not found
+                System.err.println("Lesson search failed: " + ex.getMessage());
+            }
+
             String notFound = String.format(
                 "{\"word\":\"%s\",\"phonetic\":\"/word/\",\"meaning\":\"Sorry, I don't have this word in my vocabulary database yet. Try another word!\",\"example\":\"Keep learning new words!\"}",
                 word
