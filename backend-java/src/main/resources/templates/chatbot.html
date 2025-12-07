@@ -483,8 +483,8 @@
         addChatMessage('', 'loading');
 
         try {
-            // Call Python service
-            const response = await fetch('http://localhost:5000/api/chat', {
+            // Call Java backend API (proxy to Python service)
+            const response = await fetch('/chatbot/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -519,7 +519,7 @@
             }
 
             // Fallback response
-            addChatMessage('Xin lỗi, AI service hiện không available. Vui lòng kiểm tra Python server có chạy không (http://localhost:5000)', 'bot');
+            addChatMessage('Xin lỗi, AI service hiện không available. Vui lòng thử lại sau.', 'bot');
         }
     }
 
@@ -575,8 +575,8 @@
         currentVocabWord = word;
 
         try {
-            // Call Python service
-            const response = await fetch('http://localhost:5000/api/vocabulary', {
+            // Call Java backend API (proxy to Python service)
+            const response = await fetch('/chatbot/api/vocabulary', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -602,7 +602,7 @@
             document.getElementById('emptyVocab').style.display = 'none';
         } catch (error) {
             console.error('Error:', error);
-            alert('Không thể tìm từ này. Vui lòng kiểm tra Python server (http://localhost:5000)');
+            alert('Không thể tìm từ này. Vui lòng thử lại sau.');
         }
     }
 

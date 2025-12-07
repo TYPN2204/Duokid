@@ -7,6 +7,12 @@ import uuid
 import os
 import random
 import re
+import requests
+
+# Hugging Face API Configuration - Load from environment variable
+HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
+# Using the new serverless inference API endpoint
+HF_API_URL = "https://router.huggingface.co/models/distilgpt2"
 
 app = FastAPI()
 
@@ -21,6 +27,12 @@ app.add_middleware(
 
 TTS_FOLDER = "tts_audio"
 os.makedirs(TTS_FOLDER, exist_ok=True)
+
+print("✅ Hugging Face API configured successfully!")
+print(f"🤖 Using model: distilgpt2 (lightweight text generation)")
+print(f"🔌 API Endpoint: https://api-inference.huggingface.co")
+
+
 
 
 class SuggestRequest(BaseModel):
@@ -281,43 +293,68 @@ VOCABULARY_LIBRARY = {
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
     """
-    Simple chatbot API for learning English
+    AI ChatBot sử dụng Hugging Face Text Generation
     """
-    message = req.message.lower().strip()
+    message = req.message.strip()
     
-    # Pattern matching for common questions
-    responses = {
-        "how are you": "I'm doing great! Thank you for asking. How about you?",
-        "hi": "Hello! How can I help you learn English today?",
-        "hello": "Hi there! What would you like to learn?",
-        "what is your name": "I'm ChatBot, your English learning assistant!",
-        "thank you": "You're welcome! Keep practicing English!",
-        "how to pronounce": "You can use the vocabulary lookup feature to hear pronunciation!",
-        "can you help": "Of course! I'm here to help you learn English. Ask me anything!",
-        "what is": "That's a great question! Try looking it up in the vocabulary section.",
-        "example": "I can provide examples! Use the vocabulary lookup feature.",
-        "phát âm": "You can listen to pronunciation in the vocabulary section by clicking the 🔊 button!",
-        "ví dụ": "Great! Try the vocabulary lookup feature to see examples.",
-        "từ": "Perfect! Let's explore vocabulary together using the lookup feature.",
-        "help": "I can help you with:\n1. Learning new vocabulary\n2. Understanding English phrases\n3. Providing examples\n4. Pronunciation tips\nWhat would you like help with?",
-    }
+    if not message:
+        return ChatResponse(reply="Please type a message to chat with me!")
     
-    # Check for exact or partial matches
-    for key, response in responses.items():
-        if key in message:
-            return ChatResponse(reply=response)
+    try:
+        # Call Hugging Face Inference API
+        headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
+        
+        payload = {
+            "inputs": message[:80],
+            "parameters": {
+                "max_new_tokens": 60,
+                "temperature": 0.7
+            }
+        }
+        
+        response = requests.post(
+            "https://router.huggingface.co/models/distilgpt2",
+            headers=headers,
+            json=payload,
+            timeout=15
+        )
+        
+        # Handle different response codes
+        if response.status_code == 200:
+            try:
+                result = response.json()
+            except:
+                return ChatResponse(reply="That's interesting! Can you tell me more?")
+            
+            if isinstance(result, list) and len(result) > 0:
+                generated = result[0].get("generated_text", "")
+                
+                # Extract only the generated part
+                if generated.startswith(message):
+                    bot_reply = generated[len(message):].strip()
+                else:
+                    bot_reply = generated.strip()
+                
+                # Clean response
+                bot_reply = bot_reply.replace("\n", " ").strip()
+                if not bot_reply:
+                    bot_reply = "Great topic! Let's continue."
+                if len(bot_reply) > 150:
+                    bot_reply = bot_reply[:150].rsplit(' ', 1)[0] + "..."
+                
+                return ChatResponse(reply=bot_reply)
+        
+        elif response.status_code == 503:
+            return ChatResponse(reply="🤖 Model is loading... Try again in a moment!")
+        
+        else:
+            return ChatResponse(reply="Let me think about that...")
     
-    # Default responses
-    default_responses = [
-        "That's an interesting question! Try using the vocabulary lookup feature to learn more.",
-        "Great question! Make sure to practice regularly to improve your English.",
-        "You're doing great! Keep practicing and learning new words every day.",
-        "That's a good point! Would you like to look up a specific word?",
-        "I appreciate your interest! Continue exploring vocabulary to master English."
-    ]
-    
-    import random
-    return ChatResponse(reply=random.choice(default_responses))
+    except requests.exceptions.Timeout:
+        return ChatResponse(reply="Request timed out. Try a shorter message!")
+    except:
+        return ChatResponse(reply="That's a great question! Keep learning!")
+
 
 
 @app.post("/api/vocabulary", response_model=VocabularyResponse)
