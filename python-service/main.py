@@ -8,6 +8,7 @@ import os
 import random
 import re
 import requests
+from functools import lru_cache
 
 # Hugging Face API Configuration - Load from environment variable (free tier, but token recommended)
 HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
@@ -108,6 +109,28 @@ TOPIC_LIBRARY = {
         "My grandparents tell fun stories."
     ]
 }
+
+
+# Simple translation helper (MyMemory) to get Vietnamese meaning
+@lru_cache(maxsize=256)
+def translate_to_vi(text: str) -> str:
+    text = (text or "").strip()
+    if not text:
+        return ""
+    try:
+        resp = requests.get(
+            "https://api.mymemory.translated.net/get",
+            params={"q": text, "langpair": "en|vi"},
+            timeout=6,
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            trans = data.get("responseData", {}).get("translatedText")
+            if trans:
+                return trans
+    except Exception:
+        return text
+    return text
 
 LEVEL_LIBRARY = {
     "grade1": [
@@ -307,6 +330,36 @@ def chat(req: ChatRequest):
         f"\nUser: {message}\nAssistant:"
     )
 
+    # Trả lời nhanh các câu hỏi dạng "X là gì" hoặc "what is X"
+    lower_msg = message.lower()
+    def maybe_define_from_vocab() -> str | None:
+        # Heuristic extraction of target word/phrase
+        target = None
+        if " la gi" in lower_msg or " là gì" in lower_msg:
+            target = message.replace("là gì", "").replace("la gi", "").strip(" ?!.")
+        elif lower_msg.startswith("what is "):
+            target = message[8:].strip(" ?!.")
+        elif "meaning of" in lower_msg:
+            target = lower_msg.split("meaning of", 1)[-1].strip(" ?!.")
+        elif "define" in lower_msg:
+            target = lower_msg.split("define", 1)[-1].strip(" ?!.")
+        if not target:
+            return None
+        # Call local vocabulary logic
+        try:
+            vreq = VocabularyRequest(word=target)
+            vresp = lookup_vocabulary(vreq)
+            meaning_vi = vresp.meaning
+            if meaning_vi:
+                return f"{target}: {meaning_vi}"
+        except Exception:
+            return None
+        return None
+
+    quick_def = maybe_define_from_vocab()
+    if quick_def:
+        return ChatResponse(reply=quick_def)
+
     # Nếu không có token, trả lời ngắn gọn offline để không bị 401
     if not HF_API_TOKEN:
         offline_templates = [
@@ -432,10 +485,11 @@ def lookup_vocabulary(req: VocabularyRequest):
                 meaning_text, example_text = pick_def()
 
                 if meaning_text:
+                    vi_meaning = translate_to_vi(meaning_text)
                     return VocabularyResponse(
                         word=word,
                         phonetic=phon or "/word/",
-                        meaning=meaning_text,
+                        meaning=vi_meaning,
                         example=example_text or f"Example: {word}",
                     )
     except requests.exceptions.Timeout:
